@@ -60,12 +60,6 @@
 					$DOMNode->removeChild($childNode);
 					break;
 				} 
-				/* else if (preg_match("/comment/i",$childNode->getAttribute('id')) ) { // todo: fix this
-					$DOMNode->removeChild($childNode);
-					echo "<p>Comments Section Detected and Removed</p>";
-				}  *//*else {
-					removeJunk($childNode);
-				}*/
 				removeJunk($childNode);
 			}
 		}
@@ -91,7 +85,7 @@
 			//echo "<p>Aside Detected and removed</p>";
 			return "";
 		}
-		if ($currentTag =="noscript" ) { // should remove many kinds of browser plugin warnings
+		if ($currentTag =="noscript" ) { // should remove many kind of browser plugin warnings
 			return "";
 		}
 		if ($DOMNode->hasChildNodes()) {
@@ -135,7 +129,7 @@
 			}
 			if (max($paragraphCounts) < (0.5 * $lastHighest) ) { // if more than 50% less paragraphs, send parentNode to be output
 				//purifyContent($rootDOM->parentNode); //this works
-				purifyContent($rootDOM); // seems to work better, but cuts out header images
+				purifyContent($rootDOM); //works more reliably, but cuts out header images
 			} else {
 				$lastHighest = max($paragraphCounts);
 				if ($GLOBALS["debug"]==1) {
@@ -150,9 +144,6 @@
 			}
 		}
 	}
-	// things to add to ^ for finding last meaningful element:
-	// must contain at least 70% of paragraphs seen in above element if not return path of above element for further processing and extraction
-	//$debug = 0;
 	
 	// convert raw http headers to associative array
 	function parseHeaders( $headers ) {
@@ -239,7 +230,7 @@
 		}
 	}
 	
-	function getAcademicPage ($targetUrl) { // todo: ask for user credentials before supplying access to academic content (to prevent abuse)
+	function getAcademicPage ($targetUrl) { // TODO: ask for user credentials before supplying access to academic content (to prevent abuse)
 		// magic code removed for licensing / legal reasons
 		$response = http_get($targetUrl); // should now follow redirects
 		//echo "<p>Response was: ".$response."</p>";
@@ -258,7 +249,7 @@
 				$GLOBALS["debug"] = 1;
 			}
 		}
-		if ( isset ( $_GET["academic"]) ) { // does not yet work, does not retain and regurgitate cookies (which are required by the swin auth system)
+		if ( isset ( $_GET["academic"]) ) {
 			if ( $_GET["academic"] == true){
 				echo "<p>Was an academic source, getting access past pay-wall...</p>";
 				//echo "<p>Get Academic Returned: ".getAcademicPage($_GET["targetUrl"])."</p>";
@@ -267,16 +258,16 @@
 		} else {
 			@$doc->loadHTMLFile( $_GET["targetUrl"] );
 		}
-		$doc->encoding = 'utf-8';;
-		//@$doc->loadHTMLFile($_GET["targetUrl"]);
+		$doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
 		$xpath = new DOMXpath($doc);
 		checkNode($doc,$xpath,0);
 	}
-/* general ideas for finding important content in a page:
-	within article tag?
-	within certain key divs, article, content, etc
-	large paragraphs/many groups of paragraphs one after another
-	
+/*
+	TODO: Implement some more of below ideas
+	general ideas for finding important content in a page:
+		-within article tag?
+		-within certain key divs, article, content, etc
+		-large paragraphs/many groups of paragraphs one after another
 	only retain whitelisted tags <p> <blockquote> <img>, eventually only process the raw data from these tags then reconstitute
 	*/
 ?>
