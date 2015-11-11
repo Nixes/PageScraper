@@ -1,0 +1,54 @@
+html {
+	font-family:"Times New Roman",Times,serif;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+body {
+	margin:0;
+}
+
+#document {
+margin: 0 auto;
+background:#FCFCFC;
+padding:10px;
+width:600px;
+}
+
+#origin_page {
+	display:block;
+	font-family:sans-serif;
+	margin: 0 auto;
+	padding:10px;
+	/*width:100%; */
+	background:#B0B0B0 ;
+	color:#D5D5D5;
+	text-decoration: none;
+}
+#origin_page:hover {
+	background:#555;
+}
+#origin_page:active {
+	background:  #444;
+	color:white;
+}
+
+img {
+	max-width:600px;
+}
+
+@media only screen and (max-width:600px) {
+	#document {
+		margin:0;
+		padding:0;
+		width: 100%; /* 20em worked pretty well */
+	}
+	#document p {
+		padding-left:10px;
+		padding-right:10px;
+	}
+	
+	img {
+		/*max-width:20em; */
+		max-width:100%;
+	}
+}
