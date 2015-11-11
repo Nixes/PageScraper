@@ -40,7 +40,7 @@ img {
 	#document {
 		margin:0;
 		padding:0;
-		width: 100%; /* 20em worked pretty well */
+		width: 100%;
 	}
 	#document p {
 		padding-left:10px;
@@ -48,7 +48,6 @@ img {
 	}
 	
 	img {
-		/*max-width:20em; */
 		max-width:100%;
 	}
 }
