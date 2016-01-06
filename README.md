@@ -1,7 +1,7 @@
 # PageScraper
 This project aims to be able to robustly grab the main article contents from any content heavy page. This was integrated with my other RSS reader PHP script.
 
-The basic assumption behind the algorithm is that the article/content heavy portion of any site is likly to also be the largest cluster of <p> tags in the document.
+The basic assumption behind the algorithm is that the article/content heavy portion of any site is likely to also be the largest cluster of <p> tags in the document.
 
 The algorithm can be sumarised as follows:
 
