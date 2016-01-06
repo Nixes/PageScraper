@@ -1,9 +1,12 @@
+<?php
+    
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 		<title>Page Scrape</title>
 		<link rel="stylesheet" type="text/css" href="styles/main.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -78,7 +81,7 @@
 		//	$content = "<hr></hr>";
 		//}
 		if ($currentTag =="img" ) {
-			$content = "<img src=".$DOMNode->attributes->getNamedItem("src")->nodeValue." style='vertical-align:middle'></img>";
+			$content = "<div class='img_container'><img src=".$DOMNode->attributes->getNamedItem("src")->nodeValue." style='vertical-align:middle'></img></div>";
 		}
 		//blacklist, if one of these elements are found, stop here as any further processing is a waste of time
 		if ($currentTag =="aside" ) {
@@ -243,7 +246,12 @@
 		echo "<a href='";
 		echo $_GET["targetUrl"];
 		echo "' id=origin_page>Original Page</a>";
-		
+		echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
+                    <input type=hidden name='itemsRequestType' value='add' ></input>
+                    <input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
+                    <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
+                    </form>";
+        
 		if ( isset ( $_GET["debug"]) ) {
 			if ( $_GET["debug"] == true){
 				$GLOBALS["debug"] = 1;
