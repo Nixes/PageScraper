@@ -83,7 +83,7 @@
 		//	$content = "<hr></hr>";
 		//}
 		if ($currentTag =="img" ) {
-			$content = "<div class='img_container'><img src=".$DOMNode->attributes->getNamedItem("src")->nodeValue." style='vertical-align:middle'></img></div>";
+			$content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
 		}
 		//blacklist, if one of these elements are found, stop here as any further processing is a waste of time
 		if ($currentTag =="aside" ) {
