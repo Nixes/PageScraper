@@ -14,16 +14,16 @@ body {
 	padding-bottom:10px;
 }
 
-#document h1, h2 {
+h1, h2 {
 	font-weight: 300;
 }
 
-#document p, h1, h2 {
+p, h1, h2 {
 	margin:20px;
 	color:#222;
 }
 
-#document blockquote {
+blockquote {
 	background: rgba(252, 251, 238, 0.42);
 	box-shadow: inset 0px 0px 3px 0px rgba(107, 106, 88, 0.75);
 	font-style: italic;
@@ -31,7 +31,7 @@ body {
 	margin: 0;
 	color:#222;
 }
-#document blockquote:before {
+blockquote:before {
   color: #ccc;
   content: open-quote;
   font-size: 4em;
@@ -39,7 +39,7 @@ body {
   margin-right: 0.25em;
   vertical-align: -0.4em;
 }
-#document blockquote:after {
+blockquote:after {
   color: #ccc;
   content: close-quote;
   font-size: 4em;
@@ -82,7 +82,7 @@ body {
 	background:#687180;
 }
 #read_it_later_button:active {
-    background:#373D56;
+  background:#373D56;
 }
 
 img {
@@ -110,10 +110,10 @@ a:hover {
 	text-decoration: underline;
 }
 
-hr + .img_container {
-
-}
 @media only screen and (max-width:800px) {
+	html {
+		background: none;
+	}
 	#document {
 		margin:0;
 		padding:0;
@@ -122,7 +122,7 @@ hr + .img_container {
 		padding-bottom:10px;
 	}
 
-	#document p, h1, h2, blockquote {
+	p, h1, h2, blockquote {
 		color:#ccc;
 	}
 
