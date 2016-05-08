@@ -1,19 +1,5 @@
 <?php
 
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-		<title>Page Scrape</title>
-		<link rel="stylesheet" type="text/css" href="styles/main.css">
-		<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<body>
-
-<div id="document">
-<?php
 	// returns index of array that is largest
 	function findHighestIndex($arr) {
 		$highestNo = 0;
@@ -70,18 +56,21 @@
 		}
 	}
 
-	// this mostly works with the exception of it not handling links
 	function getParagraphs($DOMNode) {
 		$currentTag = $DOMNode->tagName;
 		//whitelist
 		if ($currentTag =="p" ) {
-			// before printing check for interruption in the paragraph and handle
 			//removeJunk($DOMNode);
-			$content = "<p>".$DOMNode->nodeValue."</p>";
+			$content = "<p>";
+			foreach($DOMNode->childNodes as $node) {
+				if ($node->tagName =="a") {
+					$content .= "<a href='".$node->attributes->getNamedItem("href")->nodeValue."'>".$node->nodeValue."</a>";
+				} else {
+					$content .= $node->nodeValue;
+				}
+			}
+			$content .= "</p>";
 		}
-		//if ($currentTag =="hr" ) {
-		//	$content = "<hr></hr>";
-		//}
 		if ($currentTag =="img" ) {
 			$content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
 		}
@@ -90,7 +79,7 @@
 			//echo "<p>Aside Detected and removed</p>";
 			return "";
 		}
-		if ($currentTag =="noscript" ) { // should remove many kind of browser plugin warnings
+		if ($currentTag =="noscript" ) { // should remove many kinds of browser plugin warnings
 			return "";
 		}
 		if ($DOMNode->hasChildNodes()) {
@@ -110,10 +99,28 @@
 			// next get only the content of <p> elements found under this branch
 			echo "</br></br><h1>Filtered Content (only text from paragraphs kept)</h1>";
 		}
-		echo getParagraphs($DOMNode);
+		$GLOBALS["content"] = getParagraphs($DOMNode);
 	}
 
-	// check the nodes at each level and follow the one which had the highest no of <p> within
+	function parseHtmlHeader ($DOMNode) {
+		$childNodes = $DOMNode->childNodes;
+		for ( $i=0; $i < $childNodes->length; $i++ ) {
+			$childNode = $childNodes->item($i);
+			if ($childNode->tagName == "title") {
+				$GLOBALS["title"] = $childNode->nodeValue;
+			}
+			if ($childNode->tagName == "meta") {
+				if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
+					$GLOBALS["title"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+				}
+				if ($childNode->attributes->getNamedItem("name")->nodeValue == "author") {
+					$GLOBALS["author"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+				}
+			}
+		}
+	}
+
+	// check the nodes at each level and follow the one which had the highest no. of <p> within
 	function checkNode($rootDOM,$rootXpath,$lastHighest) {
 		if ($rootDOM->hasChildNodes()) {
 			removeJunk($rootDOM);
@@ -121,6 +128,9 @@
 			$paragraphCounts = array();
 			for ($i =0; $i < $childNodes->length; $i++ ) {
 				$childNode = $childNodes->item($i);
+				if ($childNode->tagName == "head") {
+					parseHtmlHeader($childNode);
+				}
 				$childNodeLocation = $childNode->getNodePath();
 				$childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
 				if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
@@ -169,7 +179,7 @@
 	}
 
 	// function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
-	// this is due to the lack of curl on this server which I am in no position to fix
+	// use due to the lack of curl on this server which I am in no position to fix
 	function http_post_flds($url, $data, $cookie,$headers=null) {
 		$data = http_build_query($data);
 		$opts = array('http' => array(
@@ -245,14 +255,6 @@
 	if ( isset ( $_GET["targetUrl"]) ) {
 		$doc = new DOMDocument;
 		$doc->preserveWhiteSpace = FALSE;
-		echo "<a href='";
-		echo $_GET["targetUrl"];
-		echo "' id=origin_page>Original Page</a>";
-		echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
-                    <input type=hidden name='itemsRequestType' value='add' ></input>
-                    <input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
-                    <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
-                    </form>";
 
 		if ( isset ( $_GET["debug"]) ) {
 			if ( $_GET["debug"] == true){
@@ -280,6 +282,38 @@
 		-large paragraphs/many groups of paragraphs one after another
 	only retain whitelisted tags <p> <blockquote> <img>, eventually only process the raw data from these tags then reconstitute
 	*/
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<link rel="stylesheet" type="text/css" href="styles/main.css">
+		<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<?php
+		echo "<title>".$GLOBALS["title"]."</title>";
+		 ?>
+</head>
+
+<body>
+
+<div id="document">
+<?php
+	echo "<a href='".$_GET["targetUrl"]."' id=origin_page>Original Page</a>";
+	echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
+									<input type=hidden name='itemsRequestType' value='add' ></input>
+									<input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
+									<button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
+									</form>";
+	if (isset($GLOBALS["title"])) {
+		echo "<h1>".$GLOBALS["title"]."</h1>";
+		echo "<hr>";
+	}
+	if (isset($GLOBALS["author"])) {
+		echo "<h2>".$GLOBALS["author"]."</h2>";
+		echo "<hr>";
+	}
+
+	echo $GLOBALS["content"];
 ?>
 </div>
 
