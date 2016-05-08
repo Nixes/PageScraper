@@ -1,5 +1,22 @@
 <?php
 
+<<<<<<< HEAD
+=======
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Page Scrape</title>
+	<link rel="stylesheet" type="text/css" href="styles/main.css">
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<div id="document">
+<?php
+>>>>>>> origin/master
 	// returns index of array that is largest
 	function findHighestIndex($arr) {
 		$highestNo = 0;
@@ -22,14 +39,14 @@
 			for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
 				$childNode = $childNodes->item($i);
 				if ($childNode->hasAttributes() ) {
-					if (preg_match("/comment/i",$childNode->getAttribute('id')) ) { // todo: fix this
+					if (preg_match("/comment/i",$childNode->getAttribute('id')) ) {
 						$DOMNode->removeChild($childNode);
 						if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
 							echo "<p>Comments Section ID Detected and Removed at: ".$childNode->getAttribute('id')."</p>";
 						}
 						break;
 					}
-					if (preg_match("/comment/i",$childNode->getAttribute('class')) ) { // todo: fix this
+					if (preg_match("/comment/i",$childNode->getAttribute('class')) ) {
 						$DOMNode->removeChild($childNode);
 						if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
               echo "<p>Comments Section CLASS Detected and Removed at".$childNode->getAttribute('class')."</p>";
@@ -56,6 +73,10 @@
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	// this works with the exception of it not handling links
+>>>>>>> origin/master
 	function getParagraphs($DOMNode) {
 		$currentTag = $DOMNode->tagName;
 		//whitelist
@@ -163,13 +184,11 @@
 	// convert raw http headers to associative array
 	function parseHeaders( $headers ) {
 		$head = array();
-		foreach( $headers as $k=>$v )
-		{
+		foreach( $headers as $k=>$v ) {
 			$t = explode( ':', $v, 2 );
 			if( isset( $t[1] ) )
 				$head[ trim($t[0]) ] = trim( $t[1] );
-			else
-			{
+			else {
 				$head[] = $v;
 				if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
 					$head['reponse_code'] = intval($out[1]);
@@ -179,7 +198,11 @@
 	}
 
 	// function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
+<<<<<<< HEAD
 	// use due to the lack of curl on this server which I am in no position to fix
+=======
+	// used due to the lack of curl on this server which I am in no position to fix
+>>>>>>> origin/master
 	function http_post_flds($url, $data, $cookie,$headers=null) {
 		$data = http_build_query($data);
 		$opts = array('http' => array(
@@ -255,6 +278,17 @@
 	if ( isset ( $_GET["targetUrl"]) ) {
 		$doc = new DOMDocument;
 		$doc->preserveWhiteSpace = FALSE;
+<<<<<<< HEAD
+=======
+		echo "<a href='";
+		echo $_GET["targetUrl"];
+		echo "' id=origin_page>Original Page</a>";
+		echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
+          <input type=hidden name='itemsRequestType' value='add' ></input>
+          <input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
+          <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
+          </form>";
+>>>>>>> origin/master
 
 		if ( isset ( $_GET["debug"]) ) {
 			if ( $_GET["debug"] == true){
