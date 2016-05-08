@@ -1,22 +1,4 @@
 <?php
-
-<<<<<<< HEAD
-=======
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Page Scrape</title>
-	<link rel="stylesheet" type="text/css" href="styles/main.css">
-	<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<body>
-
-<div id="document">
-<?php
->>>>>>> origin/master
 	// returns index of array that is largest
 	function findHighestIndex($arr) {
 		$highestNo = 0;
@@ -73,10 +55,6 @@
 		}
 	}
 
-<<<<<<< HEAD
-=======
-	// this works with the exception of it not handling links
->>>>>>> origin/master
 	function getParagraphs($DOMNode) {
 		$currentTag = $DOMNode->tagName;
 		//whitelist
@@ -198,11 +176,7 @@
 	}
 
 	// function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
-<<<<<<< HEAD
-	// use due to the lack of curl on this server which I am in no position to fix
-=======
 	// used due to the lack of curl on this server which I am in no position to fix
->>>>>>> origin/master
 	function http_post_flds($url, $data, $cookie,$headers=null) {
 		$data = http_build_query($data);
 		$opts = array('http' => array(
@@ -278,17 +252,6 @@
 	if ( isset ( $_GET["targetUrl"]) ) {
 		$doc = new DOMDocument;
 		$doc->preserveWhiteSpace = FALSE;
-<<<<<<< HEAD
-=======
-		echo "<a href='";
-		echo $_GET["targetUrl"];
-		echo "' id=origin_page>Original Page</a>";
-		echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
-          <input type=hidden name='itemsRequestType' value='add' ></input>
-          <input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
-          <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
-          </form>";
->>>>>>> origin/master
 
 		if ( isset ( $_GET["debug"]) ) {
 			if ( $_GET["debug"] == true){
