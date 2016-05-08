@@ -1,6 +1,6 @@
 html {
 	font-family:Arial,sans-serif;
-	background: #333;
+	background: #333 url("bg.png") repeat;
 }
 
 body {
@@ -10,13 +10,17 @@ body {
 #document {
 	margin: 0 auto;
 	background:#FCFCFC;
-	width:600px;
+	width:800px;
 	padding-bottom:10px;
 }
 
-#document p {
-	color:#222;
+#document h1, h2 {
+	font-weight: 300;
+}
+
+#document p, h1, h2 {
 	margin:20px;
+	color:#222;
 }
 
 #origin_page {
@@ -38,8 +42,8 @@ body {
 }
 
 #read_it_later_button {
-    border:none;
-    display:block;
+  border:none;
+  display:block;
 	font-family:sans-serif;
 	padding: 10px 0 10px 0;
 	width:100%;
@@ -56,28 +60,45 @@ body {
 }
 
 img {
-	max-width:600px;
+	max-width:800px;
 	margin:0 auto;
 	display:block;
 }
 
 .img_container {
-	background:rgba(0, 0, 0, 0.2);
+	background:rgba(60, 28, 10, 0.2);
 	width: 100%;
 }
 
-@media only screen and (max-width:600px) {
+a {
+  text-decoration: none;
+}
+
+a:link {
+	color: #ff4f00;
+}
+a:visited {
+	color: #699fb3;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+hr + .img_container {
+	
+}
+@media only screen and (max-width:800px) {
 	#document {
 		margin:0;
 		padding:0;
 		width: 100%;
 		background:#333;
 	}
-	
-	#document p {
+
+	#document p, h1, h2 {
 		color:#ccc;
 	}
-	
+
 	img {
 		max-width:100%;
 	}
