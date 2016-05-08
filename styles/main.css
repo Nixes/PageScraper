@@ -23,6 +23,32 @@ body {
 	color:#222;
 }
 
+#document blockquote {
+	background: rgba(252, 251, 238, 0.42);
+	box-shadow: inset 0px 0px 3px 0px rgba(107, 106, 88, 0.75);
+	font-style: italic;
+	padding: 20px;
+	margin: 0;
+	color:#222;
+}
+#document blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+#document blockquote:after {
+  color: #ccc;
+  content: close-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-left: 0.05em;
+  vertical-align: -0.6em
+}
+
+
 #origin_page {
 	display:block;
 	font-family:sans-serif;
@@ -85,7 +111,7 @@ a:hover {
 }
 
 hr + .img_container {
-	
+
 }
 @media only screen and (max-width:800px) {
 	#document {
@@ -93,9 +119,10 @@ hr + .img_container {
 		padding:0;
 		width: 100%;
 		background:#333;
+		padding-bottom:10px;
 	}
 
-	#document p, h1, h2 {
+	#document p, h1, h2, blockquote {
 		color:#ccc;
 	}
 

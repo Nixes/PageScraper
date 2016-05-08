@@ -59,7 +59,6 @@
 		$currentTag = $DOMNode->tagName;
 		//whitelist
 		if ($currentTag =="p" ) {
-			//removeJunk($DOMNode);
 			$content = "<p>";
 			foreach($DOMNode->childNodes as $node) {
 				if ($node->tagName =="a") {
@@ -70,6 +69,11 @@
 			}
 			$content .= "</p>";
 		}
+
+		if ($currentTag =="blockquote" ) {
+			$content .= "<blockquote>".$DOMNode->nodeValue."</blockquote>";
+		}
+
 		if ($currentTag =="img" ) {
 			$content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
 		}
@@ -271,14 +275,6 @@
 		$xpath = new DOMXpath($doc);
 		checkNode($doc,$xpath,0);
 	}
-/*
-	TODO: Implement some more of below ideas
-	general ideas for finding important content in a page:
-		-within article tag?
-		-within certain key divs, article, content, etc
-		-large paragraphs/many groups of paragraphs one after another
-	only retain whitelisted tags <p> <blockquote> <img>, eventually only process the raw data from these tags then reconstitute
-	*/
 ?>
 <!DOCTYPE html>
 <html lang="en">
