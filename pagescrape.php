@@ -14,6 +14,7 @@
 
 	// this function differs from other recursive functions bellow in that is actually remove nodes that fit a certain criteria
 	// this function has reliability issues and seems to miss some items for seemingly no reason
+	// this function should probably check against an external blacklist rather than this inline rubbish.
 	function removeJunk($DOMNode) {
 		if ($DOMNode->hasChildNodes()) {
 			$childNodes = $DOMNode->childNodes;
@@ -32,6 +33,14 @@
 						$DOMNode->removeChild($childNode);
 						if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
               echo "<p>Comments Section CLASS Detected and Removed at".$childNode->getAttribute('class')."</p>";
+						}
+						break;
+					}
+					// this one is ieee spectrum specific
+					if (preg_match("/iso-content/i",$childNode->getAttribute('id')) ) {
+						$DOMNode->removeChild($childNode);
+						if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+							echo "<p>Comments Section CLASS Detected and Removed at".$childNode->getAttribute('id')."</p>";
 						}
 						break;
 					}
@@ -296,13 +305,13 @@
 									<input type=hidden name='itemsRequestType' value='add' ></input>
 									<input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
 									<button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
-									</form>";
+									</form><div class='clearfloat'></div>";
 	if (isset($GLOBALS["title"])) {
 		echo "<h1>".$GLOBALS["title"]."</h1>";
 		echo "<hr>";
 	}
 	if (isset($GLOBALS["author"])) {
-		echo "<h2>".$GLOBALS["author"]."</h2>";
+		echo "<h2>by ".$GLOBALS["author"]."</h2>";
 		echo "<hr>";
 	}
 
