@@ -289,7 +289,8 @@
         @$doc->loadHTML( getAcademicPage($_GET["targetUrl"]) ); // we don't want to see every parse fail
       }
     } else {
-      @$doc->loadHTMLFile( $_GET["targetUrl"] );
+      $actualpage = file_get_contents($_GET["targetUrl"]);
+      @$doc->loadHTML( mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto") );
     }
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
     $xpath = new DOMXpath($doc);
@@ -300,7 +301,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="styles/main.css">
-    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
     echo "<title>".$GLOBALS["title"]."</title>";
