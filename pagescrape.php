@@ -78,7 +78,6 @@
       }
       $content .= "</p>";
     }
-
     if ($currentTag =="img" ) {
       $content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
     }
@@ -104,12 +103,11 @@
         $content .= "</blockquote>";
       }
     } else {
+
       // if there is a blockquote but it does not contain any further nodes, then do this simply
       if ($currentTag =="blockquote" ) {
         $content .= "<blockquote>";
-
         $content .= $DOMNode->nodeValue;
-
         $content .= "</blockquote>";
       }
     }
@@ -267,7 +265,8 @@
     }
   }
 
-  function getAcademicPage ($targetUrl) { // TODO: ask for user credentials before supplying access to academic content (to prevent abuse)
+  function getAcademicPage ($targetUrl) {
+    // TODO: ask for user credentials before supplying access to academic content (to prevent abuse)
     // magic code removed for licensing / legal reasons
     $response = http_get($targetUrl); // should now follow redirects
     //echo "<p>Response was: ".$response."</p>";
