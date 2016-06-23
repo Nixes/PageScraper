@@ -1,7 +1,7 @@
 # PageScraper
 This project aims to be able to robustly grab the main article contents from any content heavy page. This was integrated with my other RSS reader PHP script.
 
-It generates a very minimal reading page with only; one highly compressed repeating background image, no fonts, no js, one shared css file. It also has mobile view activated automatically based on screen width (using a css media query).
+It generates a very minimal reading page with only; one highly compressed repeating background image, no fonts, no js, one shared css file. It also has mobile view activated automatically based on screen width (using a css media query). All this in less then 30KB.
 
 
 Basic usage:
