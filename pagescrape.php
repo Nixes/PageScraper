@@ -79,10 +79,6 @@
       $content .= "</p>";
     }
 
-    if ($currentTag =="blockquote" ) {
-      $content .= "<blockquote>".$DOMNode->nodeValue."</blockquote>";
-    }
-
     if ($currentTag =="img" ) {
       $content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
     }
@@ -95,10 +91,26 @@
       return "";
     }
     if ($DOMNode->hasChildNodes()) {
+      if ($currentTag =="blockquote" ) {
+        $content .= "<blockquote>";
+      }
+
       $childNodes = $DOMNode->childNodes;
       for ( $i=0; $i < $childNodes->length; $i++ ) {
         $childNode = $childNodes->item($i);
         $content = $content.getParagraphs($childNode);
+      }
+      if ($currentTag =="blockquote" ) {
+        $content .= "</blockquote>";
+      }
+    } else {
+      // if there is a blockquote but it does not contain any further nodes, then do this simply
+      if ($currentTag =="blockquote" ) {
+        $content .= "<blockquote>";
+
+        $content .= $DOMNode->nodeValue;
+
+        $content .= "</blockquote>";
       }
     }
     return $content;
