@@ -10,10 +10,14 @@ $junk_attribues = [
 ]
 
 $bad_tags = [
+  // asides very often contain js metadata
   "aside",
+
+  // we don't really support lists, and they are often a very large source of irrelevant <p> tags
   "ul",
   "ol"
 ]
+
 
 function containsJunk($childNode) {
   foreach($junk_attribues as $junk_attribute) {
