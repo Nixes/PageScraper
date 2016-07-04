@@ -4,11 +4,11 @@ function containsJunk($childNode) {
 
   $junk_attribues = [
     // these two remove most comment sections
-    array(regex => "/comment/i", attribute => "id"),
-    array(regex => "/comment/i", attribute => "class"),
+    array('regex' => "/comment/i", 'attribute' => "id"),
+    array('regex' => "/comment/i", 'attribute' => "class"),
 
      // this is an ieee spectrum specific regex
-    array(regex => "/iso-content/i", attribute => "id")
+    array('regex' => "/iso-content/i", 'attribute' => "id")
   ];
 
 
@@ -25,7 +25,7 @@ function containsJunk($childNode) {
 }
 
 function containsBadTag ($childNode) {
-  
+
   $bad_tags = [
     // asides very often contain js metadata
     "aside",
