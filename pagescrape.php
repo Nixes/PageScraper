@@ -15,7 +15,6 @@ require 'blacklist.php';
   }
 
   // this function differs from other recursive functions below in that it actually remove nodes that fit a certain criteria
-  // TODO: this function should probably check against an external blacklist rather than this inline rubbish.
   function removeJunk($DOMNode) {
     if ($DOMNode->hasChildNodes()) {
       $childNodes = $DOMNode->childNodes;
