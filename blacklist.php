@@ -9,7 +9,10 @@ function containsJunk($childNode) {
     array('regex' => "/comment/i", 'attribute' => "class"),
 
      // this is an ieee spectrum specific regex
-    array('regex' => "/iso-content/i", 'attribute' => "id")
+    array('regex' => "/iso-content/i", 'attribute' => "id"),
+
+    // phys org related / recommended stories remover
+    array('regex' => "/news-holder/i", 'attribute' => "id")
   ];
 
 
