@@ -18,6 +18,7 @@ function containsJunk($childNode) {
         echo "<p>Regex: ".$junk_attribute["regex"]." For Attribute: ".$junk_attribute["attribute"]."  Detected and Removed Element</p>";
       }
       return true;
+      break;
     } else {
       return false;
     }
@@ -25,24 +26,31 @@ function containsJunk($childNode) {
 }
 
 function containsBadTag ($childNode) {
+  $return = false;
 
   $bad_tags = [
     // asides very often contain js metadata
-    "aside",
+    'aside',
 
     // we don't really support lists, and they are often a very large source of irrelevant <p> tags
-    "ul",
-    "ol"
+    'ul',
+    'ol'
   ];
 
+  if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+    echo "current tag =".$childNode->tagName."</br>";
+  }
 
   foreach($bad_tags as $bad_tag) {
+    //echo "bad tag ".$bad_tag."</br>";
     if ( $childNode->tagName == $bad_tag ) {
-      return true;
-      break;
-    } else {
-      return false;
+      if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+        echo "returned true</br>";
+      }
+      $return = true;
     }
   }
+  //echo "</br>";
+  return $return;
 }
 ?>
