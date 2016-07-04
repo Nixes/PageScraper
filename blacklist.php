@@ -1,6 +1,7 @@
 <?php
 
 function containsJunk($childNode) {
+  $return = false;
 
   $junk_attribues = [
     // these two remove most comment sections
@@ -17,12 +18,10 @@ function containsJunk($childNode) {
       if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
         echo "<p>Regex: ".$junk_attribute["regex"]." For Attribute: ".$junk_attribute["attribute"]."  Detected and Removed Element</p>";
       }
-      return true;
-      break;
-    } else {
-      return false;
+      $return = true;
     }
   }
+  return $return;
 }
 
 function containsBadTag ($childNode) {
@@ -37,20 +36,11 @@ function containsBadTag ($childNode) {
     'ol'
   ];
 
-  if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-    echo "current tag =".$childNode->tagName."</br>";
-  }
-
   foreach($bad_tags as $bad_tag) {
-    //echo "bad tag ".$bad_tag."</br>";
     if ( $childNode->tagName == $bad_tag ) {
-      if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-        echo "returned true</br>";
-      }
       $return = true;
     }
   }
-  //echo "</br>";
   return $return;
 }
 ?>

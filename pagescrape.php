@@ -22,9 +22,11 @@ require 'blacklist.php';
         $childNode = $childNodes->item($i);
         if ($childNode->hasAttributes() && containsJunk($childNode) ) {
           $DOMNode->removeChild($childNode);
+          break;
         }
         if ( isset($childNode->tagName) && containsBadTag($childNode) ) {
           $DOMNode->removeChild($childNode);
+          break;
         }
         removeJunk($childNode);
       }
