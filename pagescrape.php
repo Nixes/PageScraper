@@ -18,7 +18,6 @@ require 'blacklist.php';
   function removeJunk($DOMNode) {
     if ($DOMNode->hasChildNodes()) {
       $childNodes = $DOMNode->childNodes;
-      //echo "</br>".var_dump($childNodes)."</br>";
       for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
         $childNode = $childNodes->item($i);
         if ($childNode->hasAttributes() && containsJunk($childNode) ) {
