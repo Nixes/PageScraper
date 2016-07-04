@@ -1,4 +1,6 @@
 <?php
+require 'blacklist.php';
+
   // returns index of array that is largest
   function findHighestIndex($arr) {
     $highestNo = 0;
@@ -13,50 +15,18 @@
   }
 
   // this function differs from other recursive functions below in that it actually remove nodes that fit a certain criteria
-  // TODO: this function should probably check against an external blacklist rather than this inline rubbish.
   function removeJunk($DOMNode) {
     if ($DOMNode->hasChildNodes()) {
       $childNodes = $DOMNode->childNodes;
-      //echo "</br>".var_dump($childNodes)."</br>";
       for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
         $childNode = $childNodes->item($i);
-        if ($childNode->hasAttributes() ) {
-          if (preg_match("/comment/i",$childNode->getAttribute('id')) ) {
-            $DOMNode->removeChild($childNode);
-            if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-              echo "<p>Comments Section ID Detected and Removed at: ".$childNode->getAttribute('id')."</p>";
-            }
-            break;
-          }
-          if (preg_match("/comment/i",$childNode->getAttribute('class')) ) {
-            $DOMNode->removeChild($childNode);
-            if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-              echo "<p>Comments Section CLASS Detected and Removed at".$childNode->getAttribute('class')."</p>";
-            }
-            break;
-          }
-          // this one is ieee spectrum specific
-          if (preg_match("/iso-content/i",$childNode->getAttribute('id')) ) {
-            $DOMNode->removeChild($childNode);
-            if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-              echo "<p>Comments Section CLASS Detected and Removed at".$childNode->getAttribute('id')."</p>";
-            }
-            break;
-          }
+        if ($childNode->hasAttributes() && containsJunk($childNode) ) {
+          $DOMNode->removeChild($childNode);
+          break;
         }
-        if ( isset($childNode->tagName) ) {
-          if ($childNode->tagName =="aside") {
-            $DOMNode->removeChild($childNode);
-            break;
-          }
-          else if ($childNode->tagName =="ul") {
-            $DOMNode->removeChild($childNode);
-            break;
-          }
-          else if ($childNode->tagName =="ol") {
-            $DOMNode->removeChild($childNode);
-            break;
-          }
+        if ( isset($childNode->tagName) && containsBadTag($childNode) ) {
+          $DOMNode->removeChild($childNode);
+          break;
         }
         removeJunk($childNode);
       }
