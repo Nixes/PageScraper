@@ -12,9 +12,8 @@
     return $indexHighestNo;
   }
 
-  // this function differs from other recursive functions bellow in that is actually remove nodes that fit a certain criteria
-  // this function has reliability issues and seems to miss some items for seemingly no reason
-  // this function should probably check against an external blacklist rather than this inline rubbish.
+  // this function differs from other recursive functions below in that it actually remove nodes that fit a certain criteria
+  // TODO: this function should probably check against an external blacklist rather than this inline rubbish.
   function removeJunk($DOMNode) {
     if ($DOMNode->hasChildNodes()) {
       $childNodes = $DOMNode->childNodes;
