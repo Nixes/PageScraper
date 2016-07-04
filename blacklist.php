@@ -30,6 +30,7 @@ function containsBadTag ($childNode) {
   $bad_tags = [
     // asides very often contain js metadata
     'aside',
+    'script',
 
     // we don't really support lists, and they are often a very large source of irrelevant <p> tags
     'ul',
