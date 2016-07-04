@@ -1,11 +1,18 @@
 <?php
 
-// format [regex,attribute]
-
 $junk_attribues = [
+  // these two remove most comment sections
   array(regex => "/comment/i", attribute => "id"),
   array(regex => "/comment/i", attribute => "class"),
-  array(regex => "/iso-content/i", attribute => "id") // this is ieee spectrum specific
+
+   // this is an ieee spectrum specific regex
+  array(regex => "/iso-content/i", attribute => "id")
+]
+
+$bad_tags = [
+  "aside",
+  "ul",
+  "ol"
 ]
 
 function containsJunk($childNode) {
@@ -20,13 +27,6 @@ function containsJunk($childNode) {
     }
   }
 }
-
-
-$bad_tags = [
-  "aside",
-  "ul",
-  "ol"
-]
 
 function containsBadTag ($childNode) {
   foreach($bad_tags as $bad_tag) {
