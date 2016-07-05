@@ -33,27 +33,26 @@ blockquote {
 	background: rgba(252, 251, 238, 0.42);
 	box-shadow: inset 0px 0px 3px 0px rgba(107, 106, 88, 0.75);
 	font-style: italic;
-	padding: 20px;
-	margin: 0;
+	margin:0;
+	padding-top:10px;
+	padding-bottom:10px;
 	color:#222;
 }
+blockquote:before, blockquote:after {
+	  color: #ccc;
+		font-size: 4em;
+		line-height: 0.3;
+}
 blockquote:before {
-  color: #ccc;
   content: open-quote;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-right: 0.25em;
-  vertical-align: -0.4em;
+	float:left;
+	margin-top:15px;
 }
 blockquote:after {
-  color: #ccc;
   content: close-quote;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-left: 0.05em;
-  vertical-align: -0.6em
+  float:right;
+  margin-right:15px;
 }
-
 
 #read_it_later_button, #origin_page  {
   border:none;
@@ -89,9 +88,9 @@ blockquote:after {
 }
 
 /* this bit here fixes an issue with button styling in firefox */
-button::-moz-focus-inner, 
-input[type="button"]::-moz-focus-inner, 
-input[type="submit"]::-moz-focus-inner, 
+button::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner {
     padding: 0 !important;
     border: 0 none !important;
