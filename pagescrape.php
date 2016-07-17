@@ -1,7 +1,7 @@
 <?php
 require 'blacklist.php';
 
-  // returns index of array that is largest
+  // returns index of array element that contains the largest value
   function findHighestIndex($arr) {
     $highestNo = 0;
     $indexHighestNo = 0;
