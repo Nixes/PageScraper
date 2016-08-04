@@ -10,7 +10,7 @@ Basic usage:
 pagescrape.php?targetUrl=http://www.somenewssitehere.com/somearticle 
 ```
 
-
+## Algorithm
 The basic assumption behind the algorithm is that the article/content heavy portion of any site is likely to also be the largest cluster of paragraph tags in the document.
 
 The algorithm can be sumarised as follows:
