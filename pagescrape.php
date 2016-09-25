@@ -33,6 +33,19 @@ require 'blacklist.php';
     }
   }
 
+  // a function that converts a relative style url to an absolute one, works on resources and urls
+  function convertRelToAbs($url) {
+    $path = $url;
+    if ((substr($url, 0, 7) == 'http://') || (substr($url, 0, 8) == 'https://')) {
+      // url is absolute
+      return $url;
+    } else {
+      // url is relative
+      $parsed_url = parse_url( $_GET["targetUrl"] );
+      return $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+    }
+  }
+
   function getParagraphs($DOMNode) {
     $currentTag = $DOMNode->tagName;
     //whitelist
@@ -40,7 +53,7 @@ require 'blacklist.php';
       $content = "<p>";
       foreach($DOMNode->childNodes as $node) {
         if ($node->tagName =="a") {
-          $content .= "<a href='".$node->attributes->getNamedItem("href")->nodeValue."'>".$node->nodeValue."</a>";
+          $content .= "<a href='". convertRelToAbs( $node->attributes->getNamedItem("href")->nodeValue ) ."'>".$node->nodeValue."</a>";
         } else {
           $content .= $node->nodeValue;
         }
@@ -48,7 +61,7 @@ require 'blacklist.php';
       $content .= "</p>";
     }
     if ($currentTag =="img" ) {
-      $content = "<div class='img_container'><img src='".$DOMNode->attributes->getNamedItem("src")->nodeValue."' style='vertical-align:middle'></img></div>";
+      $content = "<div class='img_container'><img src='". convertRelToAbs( $DOMNode->attributes->getNamedItem("src")->nodeValue ) ."' style='vertical-align:middle'></img></div>";
     }
     //blacklist, if one of these elements are found, stop here as any further processing is a waste of time
     if ($currentTag =="aside" ) {
