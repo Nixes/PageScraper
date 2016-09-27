@@ -3,6 +3,7 @@
 <phpunit colors="true">
     <testsuites>
         <testsuite name="PageScrape Test Suite">
+            <file>./tests/tests.php</file>
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
