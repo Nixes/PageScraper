@@ -21,4 +21,4 @@ matrix:
     - php: 7.0
   fast_finish: true
 
-script: phpunit
+script: phpunit --configuration phpunit.xml --coverage-text
