@@ -3,7 +3,7 @@
 function containsJunk($childNode) {
   $return = false;
 
-  $junk_attribues = [
+  $junk_attribues = array(
     // these two remove most comment sections
     array('regex' => "/comment/i", 'attribute' => "id"),
     array('regex' => "/comment/i", 'attribute' => "class"),
@@ -13,7 +13,7 @@ function containsJunk($childNode) {
 
     // phys org related / recommended stories remover
     array('regex' => "/news-holder/i", 'attribute' => "id")
-  ];
+  );
 
 
   foreach($junk_attribues as $junk_attribute) {
@@ -30,7 +30,7 @@ function containsJunk($childNode) {
 function containsBadTag ($childNode) {
   $return = false;
 
-  $bad_tags = [
+  $bad_tags = array(
     // asides very often contain js metadata
     'aside',
     'script',
@@ -38,7 +38,7 @@ function containsBadTag ($childNode) {
     // we don't really support lists, and they are often a very large source of irrelevant <p> tags
     'ul',
     'ol'
-  ];
+  );
 
   foreach($bad_tags as $bad_tag) {
     if ( $childNode->tagName == $bad_tag ) {
