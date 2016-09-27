@@ -3,8 +3,6 @@ language: PHP
 php:
   # using major version aliases
 
-  # aliased to 5.2.17
-  - 5.2
   # aliased to 5.3.29
   - 5.3
   # aliased to a recent 5.4.x version
