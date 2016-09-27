@@ -21,4 +21,4 @@ matrix:
     - php: 7.0
   fast_finish: true
 
-script: phpunit --bootstrap src/autoload.php tests.php
+script: phpunit
