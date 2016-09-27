@@ -19,5 +19,6 @@ php:
 matrix:
   allow_failures:
     - php: 7.0
+  fast_finish: true
 
-script: phpunit tests.php
+script: phpunit
