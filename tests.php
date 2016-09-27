@@ -1,4 +1,5 @@
 <?php
+require_once 'PHPUnit/Autoload.php';
 require 'lib.php';
 
 use PHPUnit\Framework\TestCase;
