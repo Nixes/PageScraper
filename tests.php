@@ -1,5 +1,5 @@
 <?php
-require 'pagescrape.php';
+require 'lib.php';
 
 use PHPUnit\Framework\TestCase;
 
