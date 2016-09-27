@@ -1,5 +1,5 @@
 <?php
-require 'lib.php';
+require '../lib.php';
 
 use PHPUnit\Framework\TestCase;
 
