@@ -151,7 +151,7 @@ require 'blacklist.php';
       // if more than 50% less paragraphs, send parentNode to be output
       if (max($paragraphCounts) < (0.5 * $lastHighest) ) {
         // WE HAVE FOUND THE ELEMENT CONTAINING CONTENT
-        processContent($rootDOM); //works more reliably, but cuts out header images
+        processContent($rootDOM);
       } else {
         $lastHighest = max($paragraphCounts);
         if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
