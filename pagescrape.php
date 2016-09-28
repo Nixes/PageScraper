@@ -20,7 +20,8 @@ require 'lib.php';
 
       $actualpage = file_get_contents($_GET["targetUrl"]);
       @$doc->loadHTML( mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto") );
-      //$GLOBALS["final_location"] = $http_response_header["location"]);
+
+      // determine current page url
       $location = parseHeaderLocation($http_response_header);
       if ($location) {
         $GLOBALS["location"] =  $location;
