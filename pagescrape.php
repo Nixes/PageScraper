@@ -37,7 +37,7 @@ require 'lib.php';
     checkNode($doc,$xpath,0);
 
     if (strlen($GLOBALS["content"]) == 0) {
-      $GLOBALS["error"] = "failed to obtain article";
+      $GLOBALS["error"] = "failed to find article content";
     }
   }
 ?>
