@@ -170,8 +170,9 @@ require 'blacklist.php';
   function parseHeaderLocation($header) {
     $pattern = "/^Location:\s*(.*)$/i";
     $location_headers = preg_grep($pattern, $header);
+    $array_values_location = array_values($location_headers);
 
-    if (!empty($location_headers) && preg_match($pattern, array_values($location_headers)[0], $matches)){
+    if (!empty($location_headers) && preg_match($pattern, $array_values_location[0], $matches)){
       return $matches[1];
     }
   }
