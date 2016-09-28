@@ -99,7 +99,7 @@ require 'blacklist.php';
   }
 
   // will remove junk (injected javascript, small images) from input element
-  function purifyContent ($DOMNode) {
+  function processContent ($DOMNode) {
     if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
       echo "</br></br><h1>Found from: ".$DOMNode->getNodePath()."</h1><p>".$DOMNode->textContent."</p>";
       // next get only the content of <p> elements found under this branch
@@ -148,9 +148,10 @@ require 'blacklist.php';
       if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
         echo "</br>";
       }
-      if (max($paragraphCounts) < (0.5 * $lastHighest) ) { // if more than 50% less paragraphs, send parentNode to be output
-        //purifyContent($rootDOM->parentNode); //this works
-        purifyContent($rootDOM); //works more reliably, but cuts out header images
+      // if more than 50% less paragraphs, send parentNode to be output
+      if (max($paragraphCounts) < (0.5 * $lastHighest) ) {
+        // WE HAVE FOUND THE ELEMENT CONTAINING CONTENT
+        processContent($rootDOM); //works more reliably, but cuts out header images
       } else {
         $lastHighest = max($paragraphCounts);
         if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
