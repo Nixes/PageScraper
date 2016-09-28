@@ -164,6 +164,15 @@ require 'blacklist.php';
     }
   }
 
+  function parseHeaderLocation($header) {
+    $pattern = "/^Location:\s*(.*)$/i";
+    $location_headers = preg_grep($pattern, $header);
+
+    if (!empty($location_headers) && preg_match($pattern, array_values($location_headers)[0], $matches)){
+      return $matches[1];
+    }
+  }
+
   // convert raw http headers to associative array
   function parseHeaders( $headers ) {
     $head = array();
