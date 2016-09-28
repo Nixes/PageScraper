@@ -54,6 +54,14 @@ blockquote:after {
   margin-right:15px;
 }
 
+.error {
+	background: #ffd99d;
+	border-radius: 5px;
+	margin: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
 #read_it_later_button, #origin_page  {
   border:none;
   display:block;

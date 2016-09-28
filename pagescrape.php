@@ -19,7 +19,9 @@ require 'lib.php';
     } else {
 
       $actualpage = file_get_contents($_GET["targetUrl"]);
-      @$doc->loadHTML( mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto") );
+      if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
+        $GLOBALS["error"] = "failed to download page";
+      }
 
       // determine current page url
       $location = parseHeaderLocation($http_response_header);
@@ -33,6 +35,10 @@ require 'lib.php';
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
     $xpath = new DOMXpath($doc);
     checkNode($doc,$xpath,0);
+
+    if (strlen($GLOBALS["content"]) == 0) {
+      $GLOBALS["error"] = "failed to obtain article";
+    }
   }
 ?>
 <!DOCTYPE html>
@@ -50,12 +56,10 @@ require 'lib.php';
 
 <div id="document">
 <?php
-  //echo "<h1>Redir Location: ".$GLOBALS["final_location"]."</h1>";
-
   echo "<a href='".$_GET["targetUrl"]."' id=origin_page>Original Page</a>";
   echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
                   <input type=hidden name='itemsRequestType' value='add' ></input>
-                  <input type=hidden name='item' value='".$_GET["targetUrl"]."' ></input>
+                  <input type=hidden name='item' value='".$GLOBALS["location"]."' ></input>
                   <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
                   </form><div class='clearfloat'></div>";
   if (isset($GLOBALS["title"])) {
@@ -67,7 +71,14 @@ require 'lib.php';
     echo "<hr>";
   }
 
-  echo $GLOBALS["content"];
+  if( isset($GLOBALS["error"]) ) {
+    echo "<div class='error'>
+            <h1>Error</h1>
+            <p>".$GLOBALS["error"]."</p>
+          </div>";
+  } else {
+    echo $GLOBALS["content"];
+  }
 ?>
 </div>
 
