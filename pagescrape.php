@@ -17,8 +17,17 @@ require 'lib.php';
         @$doc->loadHTML( getAcademicPage($_GET["targetUrl"]) ); // we don't want to see every parse fail
       }
     } else {
+
       $actualpage = file_get_contents($_GET["targetUrl"]);
       @$doc->loadHTML( mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto") );
+      //$GLOBALS["final_location"] = $http_response_header["location"]);
+      $location = parseHeaderLocation($http_response_header);
+      if ($location) {
+        $GLOBALS["location"] =  $location;
+      } else {
+        // did not end up following redirects, so just set to original request location
+        $GLOBALS["location"] = $_GET["targetUrl"];
+      }
     }
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
     $xpath = new DOMXpath($doc);
@@ -40,6 +49,8 @@ require 'lib.php';
 
 <div id="document">
 <?php
+  //echo "<h1>Redir Location: ".$GLOBALS["final_location"]."</h1>";
+
   echo "<a href='".$_GET["targetUrl"]."' id=origin_page>Original Page</a>";
   echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
                   <input type=hidden name='itemsRequestType' value='add' ></input>

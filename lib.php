@@ -41,7 +41,7 @@ require 'blacklist.php';
       return $url;
     } else {
       // url is relative
-      $parsed_url = parse_url( $_GET["targetUrl"] );
+      $parsed_url = parse_url( $GLOBALS["location"] );
       return $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
     }
   }
