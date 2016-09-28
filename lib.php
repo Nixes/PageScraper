@@ -36,13 +36,15 @@ require 'blacklist.php';
   // a function that converts a relative style url to an absolute one, works on resources and urls
   function convertRelToAbs($url) {
     $path = $url;
-    if ((substr($url, 0, 7) == 'http://') || (substr($url, 0, 8) == 'https://')) {
-      // url is absolute
-      return $url;
-    } else {
-      // url is relative
-      $parsed_url = parse_url( $GLOBALS["location"] );
-      return $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+    if (!empty($path)) {
+      if ((substr($url, 0, 7) == 'http://') || (substr($url, 0, 8) == 'https://')) {
+        // url is absolute
+        return $url;
+      } else {
+        // url is relative
+        $parsed_url = parse_url( $GLOBALS["location"] );
+        return $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+      }
     }
   }
 
