@@ -21,3 +21,11 @@ The algorithm can be sumarised as follows:
 <li>Continue in same fashion until all node counts contain less then 50% paragraphs.</li>
 <li>Extract paragraphs and images from this node and present to suit.</li>
 </ul>
+
+
+## Common Issues and Fixes
+
+###NGINX Error: "upstream sent too big header while reading response header from upstream"
+This signifies that the page that was requested for processing was larger than allowed by your fastCGI buffer size.
+
+To fix this increase fastcgi_buffer_size in your nginx config
