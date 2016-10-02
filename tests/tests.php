@@ -11,7 +11,7 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
 
   public function test_convertRelToAbs () {
     $GLOBALS["location"] = "http://www.someweb.com";
-    $test_url = "./something/image.jpg";
+    $test_url = "/something/image.jpg";
 
     $correct_result = "http://www.someweb.com/something/image.jpg";
 
@@ -19,6 +19,7 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
 
     echo "Final url was: ".$result."\n";
     echo "Expected url was: ".$correct_result."\n";
+    $this->assertEquals($correct_result , $result );
   }
 }
 ?>
