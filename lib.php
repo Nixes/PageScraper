@@ -50,6 +50,8 @@ require 'blacklist.php';
 
   function getParagraphs($DOMNode) {
     $currentTag = $DOMNode->tagName;
+    $content = "";
+
     //whitelist
     if ($currentTag =="p" ) {
       $content = "<p>";
