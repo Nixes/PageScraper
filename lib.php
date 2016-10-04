@@ -132,7 +132,7 @@ require 'blacklist.php';
       removeJunk($rootDOM);
       $paragraphCounts = array();
       foreach ($rootDOM->childNodes as $childNode) {
-        if ($childNode->tagName == "head") {
+        if (isset($childNode->tagName) && $childNode->tagName == "head") {
           parseHtmlHeader($childNode);
         }
         $childNodeLocation = $childNode->getNodePath();
