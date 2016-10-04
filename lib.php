@@ -110,17 +110,18 @@ require 'blacklist.php';
 
   function parseHtmlHeader ($DOMNode) {
     $childNodes = $DOMNode->childNodes;
-    for ( $i=0; $i < $childNodes->length; $i++ ) {
-      $childNode = $childNodes->item($i);
-      if ($childNode->tagName == "title") {
-        $GLOBALS["title"] = $childNode->nodeValue;
-      }
-      if ($childNode->tagName == "meta" && $childNode->hasAttributes()) {
-        if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
-          $GLOBALS["title"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+    foreach ( $childNodes as $childNode) {
+      if ( isset($childNode->tagName) ) {
+        if ($childNode->tagName == "title") {
+          $GLOBALS["title"] = $childNode->nodeValue;
         }
-        if ($childNode->attributes->getNamedItem("name")->nodeValue == "author") {
-          $GLOBALS["author"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+        if ($childNode->tagName == "meta" && $childNode->hasAttributes()) {
+          if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
+            $GLOBALS["title"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+          }
+          if ($childNode->attributes->getNamedItem("name")->nodeValue == "author") {
+            $GLOBALS["author"] = $childNode->attributes->getNamedItem("content")->nodeValue;
+          }
         }
       }
     }
