@@ -115,7 +115,7 @@ require 'blacklist.php';
       if ($childNode->tagName == "title") {
         $GLOBALS["title"] = $childNode->nodeValue;
       }
-      if ($childNode->tagName == "meta") {
+      if ($childNode->tagName == "meta" && $childNode->hasAttributes()) {
         if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
           $GLOBALS["title"] = $childNode->attributes->getNamedItem("content")->nodeValue;
         }
