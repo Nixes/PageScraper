@@ -83,7 +83,9 @@ require 'blacklist.php';
       $childNodes = $DOMNode->childNodes;
       for ( $i=0; $i < $childNodes->length; $i++ ) {
         $childNode = $childNodes->item($i);
-        $content = $content.getParagraphs($childNode);
+        if (isset($childNode->tagName) ) {
+          $content = $content.getParagraphs($childNode);
+        }
       }
       if ($currentTag =="blockquote" ) {
         $content .= "</blockquote>";
@@ -107,7 +109,9 @@ require 'blacklist.php';
       // next get only the content of <p> elements found under this branch
       echo "</br></br><h1>Filtered Content (only text from paragraphs kept)</h1>";
     }
-    $GLOBALS["content"] = getParagraphs($DOMNode);
+    if ( isset($DOMNode->tagName) ) {
+      $GLOBALS["content"] = getParagraphs($DOMNode);
+    }
   }
 
   function parseHtmlHeader ($DOMNode) {
