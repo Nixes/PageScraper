@@ -281,7 +281,7 @@ require 'blacklist.php';
       $GLOBALS["location"] =  $location;
     } else {
       // did not end up following redirects, so just set to original request location
-      $GLOBALS["location"] = $_GET["targetUrl"];
+      $GLOBALS["location"] = $url;
     }
   }
 
