@@ -1,32 +1,6 @@
 <?php
 require 'lib.php';
 
-  function downloadArticle ($doc) {
-    $actualpage = file_get_contents($_GET["targetUrl"]);
-    if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
-      $GLOBALS["error"] = "failed to download page";
-    }
-
-    // determine current page url
-    $location = parseHeaderLocation($http_response_header);
-    if ($location) {
-      $GLOBALS["location"] =  $location;
-    } else {
-      // did not end up following redirects, so just set to original request location
-      $GLOBALS["location"] = $_GET["targetUrl"];
-    }
-  }
-
-  function parseArticle ($doc) {
-    $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
-    $xpath = new DOMXpath($doc);
-    checkNode($doc,$xpath,0);
-
-    if (strlen($GLOBALS["content"]) == 0) {
-      $GLOBALS["error"] = "failed to find article content";
-    }
-  }
-
   if ( isset ( $_GET["targetUrl"]) ) {
     $doc = new DOMDocument;
     $doc->preserveWhiteSpace = FALSE;
@@ -43,7 +17,7 @@ require 'lib.php';
         @$doc->loadHTML( getAcademicPage($_GET["targetUrl"]) ); // we don't want to see every parse fail
       }
     } else {
-      downloadArticle($doc);
+      downloadArticle($doc,$_GET["targetUrl"]);
     }
       parseArticle($doc);
   }

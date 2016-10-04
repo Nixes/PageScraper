@@ -267,4 +267,32 @@ require 'blacklist.php';
     //echo "<p>Response was: ".$response."</p>";
     return $response;
   }
+
+  // download page from $url and load into $doc
+  function downloadArticle ($doc,$url) {
+    $actualpage = file_get_contents($url);
+    if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
+      $GLOBALS["error"] = "failed to download page";
+    }
+
+    // determine current page url
+    $location = parseHeaderLocation($http_response_header);
+    if ($location) {
+      $GLOBALS["location"] =  $location;
+    } else {
+      // did not end up following redirects, so just set to original request location
+      $GLOBALS["location"] = $_GET["targetUrl"];
+    }
+  }
+
+  // parse the article in doc
+  function parseArticle ($doc) {
+    $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
+    $xpath = new DOMXpath($doc);
+    checkNode($doc,$xpath,0);
+
+    if (strlen($GLOBALS["content"]) == 0) {
+      $GLOBALS["error"] = "failed to find article content";
+    }
+  }
 ?>
