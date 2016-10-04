@@ -55,8 +55,9 @@ require 'blacklist.php';
     //whitelist
     if ($currentTag =="p" ) {
       $content = "<p>";
+      // this loop here check for any other inline formating within the paragraph
       foreach($DOMNode->childNodes as $node) {
-        if ($node->tagName =="a") {
+        if (isset($node->tagName) && $node->tagName =="a") {
           $content .= "<a href='". convertRelToAbs( $node->attributes->getNamedItem("href")->nodeValue ) ."'>".$node->nodeValue."</a>";
         } else {
           $content .= $node->nodeValue;
