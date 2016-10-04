@@ -28,12 +28,13 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
               "http://feedproxy.google.com/~r/cnx-software/blog/~3/j4GR4BG3ptY/"
             );
     foreach ($urls as $url) {
+      echo "Testing against page: ".$url;
       $doc = new DOMDocument;
       $doc->preserveWhiteSpace = FALSE;
       downloadArticle($doc,$url);
       parseArticle($doc);
       if ( isset($GLOBALS["error"]) ) {
-        echo "Error: ".$GLOBALS["error"];
+        echo "Error: ".$GLOBALS["error"]."\n";
       }
     }
   }
