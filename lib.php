@@ -160,7 +160,7 @@ require 'blacklist.php';
           echo "</p><br></br>";
         }
         if ($rootDOM->hasChildNodes()) {
-          checkNode( $childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
+          checkNode( $rootDOM->childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
         }
       }
   }
