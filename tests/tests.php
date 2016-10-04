@@ -21,5 +21,21 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
     echo "Expected url was: ".$correct_result."\n";
     $this->assertEquals($correct_result , $result );
   }
+
+  public function test_realArticles () {
+    $urls =  array(
+              "http://spectrum.ieee.org/cars-that-think/transportation/self-driving/california-may-be-making-testing-selfdriving-cars-easier",
+              "http://feedproxy.google.com/~r/cnx-software/blog/~3/j4GR4BG3ptY/"
+            );
+    foreach ($urls as $url) {
+      $doc = new DOMDocument;
+      $doc->preserveWhiteSpace = FALSE;
+      downloadArticle($doc,$url);
+      parseArticle($doc);
+      if ( isset($GLOBALS["error"]) ) {
+        echo "Error: ".$GLOBALS["error"];
+      }
+    }
+  }
 }
 ?>
