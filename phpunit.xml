@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit colors="true">
+<phpunit colors="true" convertNoticesToExceptions="false">
+
     <testsuites>
         <testsuite name="PageScrape Test Suite">
             <file>./tests/tests.php</file>
