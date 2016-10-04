@@ -128,7 +128,6 @@ require 'blacklist.php';
 
   // check the nodes at each level and follow the one which had the highest no. of <p> within
   function checkNode($rootDOM,$rootXpath,$lastHighest) {
-    if ($rootDOM->hasChildNodes()) {
       removeJunk($rootDOM);
       $paragraphCounts = array();
       foreach ($rootDOM->childNodes as $childNode) {
@@ -160,9 +159,10 @@ require 'blacklist.php';
           }
           echo "</p><br></br>";
         }
-        checkNode( $childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
+        if ($rootDOM->hasChildNodes()) {
+          checkNode( $childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
+        }
       }
-    }
   }
 
   function parseHeaderLocation($header) {
@@ -287,7 +287,9 @@ require 'blacklist.php';
   function parseArticle ($doc) {
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
     $xpath = new DOMXpath($doc);
-    checkNode($doc,$xpath,0);
+    if ($doc->hasChildNodes()) {
+      checkNode($doc,$xpath,0);
+    }
 
     if (strlen($GLOBALS["content"]) == 0) {
       $GLOBALS["error"] = "failed to find article content";
