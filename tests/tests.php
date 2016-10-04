@@ -25,7 +25,8 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
   public function test_realArticles () {
     $urls =  array(
               "http://spectrum.ieee.org/cars-that-think/transportation/self-driving/california-may-be-making-testing-selfdriving-cars-easier",
-              "http://feedproxy.google.com/~r/cnx-software/blog/~3/j4GR4BG3ptY/"
+              "http://feedproxy.google.com/~r/cnx-software/blog/~3/j4GR4BG3ptY/",
+              "http://feeds.sciencedaily.com/~r/sciencedaily/top_news/top_science/~3/vGzKzIZOy4E/160930144424.htm" // this test should fail
             );
     foreach ($urls as $url) {
       echo "Testing against page: ".$url;
