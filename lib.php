@@ -130,10 +130,8 @@ require 'blacklist.php';
   function checkNode($rootDOM,$rootXpath,$lastHighest) {
     if ($rootDOM->hasChildNodes()) {
       removeJunk($rootDOM);
-      $childNodes = $rootDOM->childNodes;
       $paragraphCounts = array();
-      for ($i =0; $i < $childNodes->length; $i++ ) {
-        $childNode = $childNodes->item($i);
+      foreach ($rootDOM->childNodes as $childNode) {
         if ($childNode->tagName == "head") {
           parseHtmlHeader($childNode);
         }
