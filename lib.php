@@ -136,7 +136,6 @@ require 'blacklist.php';
 
 function countParagraphs($rootDOM,$rootXpath) {
   $paragraphCounts = array();
-  try {
     foreach ($rootDOM->childNodes as $childNode) {
       if (isset($childNode->tagName) && $childNode->tagName == "head") {
         parseHtmlHeader($childNode);
@@ -153,16 +152,6 @@ function countParagraphs($rootDOM,$rootXpath) {
       echo "</br>";
     }
     return $paragraphCounts;
-  } catch(Exception $e) {
-    echo 'Paragraph count exception: ',  $e->getMessage(), "\n";
-    if ($rootDOM->hasChildNodes()) {
-      echo '$rootDOM had child nodes';
-    } else {
-      echo '$rootDOM DID NOT HAVE child nodes';
-    }
-    echo 'Dumping $rootDOM';
-    var_dump($rootDOM);
-  }
 }
 
   // check the nodes at each level and follow the one which had the highest no. of <p> within
