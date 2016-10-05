@@ -167,7 +167,6 @@ function countParagraphs($rootDOM,$rootXpath) {
 
   // check the nodes at each level and follow the one which had the highest no. of <p> within
   function checkNode($rootDOM,$rootXpath,$lastHighest) {
-      removeJunk($rootDOM);
       $paragraphCounts = countParagraphs($rootDOM,$rootXpath);
 
       // if more than 50% less paragraphs, send parentNode to be output
@@ -184,6 +183,7 @@ function countParagraphs($rootDOM,$rootXpath) {
           }
           echo "</p><br></br>";
         }
+        removeJunk($rootDOM);
         if ($rootDOM->hasChildNodes()) {
           checkNode( $rootDOM->childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
         }
@@ -312,6 +312,8 @@ function countParagraphs($rootDOM,$rootXpath) {
   function parseArticle ($doc) {
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
     $xpath = new DOMXpath($doc);
+
+    removeJunk($doc);
     if ($doc->hasChildNodes()) {
       checkNode($doc,$xpath,0);
     }
