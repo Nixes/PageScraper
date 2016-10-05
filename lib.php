@@ -134,7 +134,7 @@ require 'blacklist.php';
     }
   }
 
-function countParagraphs($rootDOM) {
+function countParagraphs($rootDOM,$rootXpath) {
   $paragraphCounts = array();
   foreach ($rootDOM->childNodes as $childNode) {
     if (isset($childNode->tagName) && $childNode->tagName == "head") {
@@ -157,7 +157,7 @@ function countParagraphs($rootDOM) {
   // check the nodes at each level and follow the one which had the highest no. of <p> within
   function checkNode($rootDOM,$rootXpath,$lastHighest) {
       removeJunk($rootDOM);
-      $paragraphsCounts = countParagraphs($rootDOM);
+      $paragraphsCounts = countParagraphs($rootDOM,$rootXpath);
 
       // if more than 50% less paragraphs, send parentNode to be output
       if (max($paragraphCounts) < (0.5 * $lastHighest) ) {
