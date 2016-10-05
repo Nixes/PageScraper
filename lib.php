@@ -183,9 +183,10 @@ function countParagraphs($rootDOM,$rootXpath) {
           }
           echo "</p><br></br>";
         }
-        removeJunk($rootDOM);
-        if ($rootDOM->hasChildNodes()) {
-          checkNode( $rootDOM->childNodes->item(findHighestIndex($paragraphCounts)), $rootXpath, $lastHighest);
+        $index_highest_pcount = findHighestIndex($paragraphCounts);
+        removeJunk( $rootDOM->childNodes->item($index_highest_pcount) );
+        if ( $rootDOM->childNodes->item($index_highest_pcount)->hasChildNodes() ) {
+          checkNode( $rootDOM->childNodes->item($index_highest_pcount), $rootXpath, $lastHighest);
         }
       }
   }
