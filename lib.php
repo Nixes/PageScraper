@@ -155,6 +155,11 @@ function countParagraphs($rootDOM,$rootXpath) {
     return $paragraphCounts;
   } catch(Exception $e) {
     echo 'Paragraph count exception: ',  $e->getMessage(), "\n";
+    if ($rootDOM->hasChildNodes()) {
+      echo '$rootDOM had child nodes';
+    } else {
+      echo '$rootDOM DID NOT HAVE child nodes';
+    }
     echo 'Dumping $rootDOM';
     var_dump($rootDOM);
   }
