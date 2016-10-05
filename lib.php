@@ -134,25 +134,31 @@ require 'blacklist.php';
     }
   }
 
+function countParagraphs($rootDOM) {
+  $paragraphCounts = array();
+  foreach ($rootDOM->childNodes as $childNode) {
+    if (isset($childNode->tagName) && $childNode->tagName == "head") {
+      parseHtmlHeader($childNode);
+    }
+    $childNodeLocation = $childNode->getNodePath();
+    $childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
+    if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+      echo "<p>No of sub elements: ".$childNodeParagraphs."</p>";
+      echo "<p> Location: ".$childNodeLocation."</p>";
+    }
+    array_push($paragraphCounts, $childNodeParagraphs);
+  }
+  if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+    echo "</br>";
+  }
+  return $paragraphCounts;
+}
+
   // check the nodes at each level and follow the one which had the highest no. of <p> within
   function checkNode($rootDOM,$rootXpath,$lastHighest) {
       removeJunk($rootDOM);
-      $paragraphCounts = array();
-      foreach ($rootDOM->childNodes as $childNode) {
-        if (isset($childNode->tagName) && $childNode->tagName == "head") {
-          parseHtmlHeader($childNode);
-        }
-        $childNodeLocation = $childNode->getNodePath();
-        $childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
-        if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-          echo "<p>No of sub elements: ".$childNodeParagraphs."</p>";
-          echo "<p> Location: ".$childNodeLocation."</p>";
-        }
-        array_push($paragraphCounts, $childNodeParagraphs);
-      }
-      if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-        echo "</br>";
-      }
+      $paragraphsCounts = countParagraphs($rootDOM);
+
       // if more than 50% less paragraphs, send parentNode to be output
       if (max($paragraphCounts) < (0.5 * $lastHighest) ) {
         // WE HAVE FOUND THE ELEMENT CONTAINING CONTENT
