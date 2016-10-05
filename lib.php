@@ -136,22 +136,28 @@ require 'blacklist.php';
 
 function countParagraphs($rootDOM,$rootXpath) {
   $paragraphCounts = array();
-  foreach ($rootDOM->childNodes as $childNode) {
-    if (isset($childNode->tagName) && $childNode->tagName == "head") {
-      parseHtmlHeader($childNode);
+  try {
+    foreach ($rootDOM->childNodes as $childNode) {
+      if (isset($childNode->tagName) && $childNode->tagName == "head") {
+        parseHtmlHeader($childNode);
+      }
+      $childNodeLocation = $childNode->getNodePath();
+      $childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
+      if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+        echo "<p>No of sub elements: ".$childNodeParagraphs."</p>";
+        echo "<p> Location: ".$childNodeLocation."</p>";
+      }
+      array_push($paragraphCounts, $childNodeParagraphs);
     }
-    $childNodeLocation = $childNode->getNodePath();
-    $childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
     if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-      echo "<p>No of sub elements: ".$childNodeParagraphs."</p>";
-      echo "<p> Location: ".$childNodeLocation."</p>";
+      echo "</br>";
     }
-    array_push($paragraphCounts, $childNodeParagraphs);
+    return $paragraphCounts;
+  } catch(Exception $e) {
+    echo 'Paragraph count exception: ',  $e->getMessage(), "\n";
+    echo 'Dumping $rootDOM';
+    var_dump($rootDOM);
   }
-  if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-    echo "</br>";
-  }
-  return $paragraphCounts;
 }
 
   // check the nodes at each level and follow the one which had the highest no. of <p> within
