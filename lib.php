@@ -283,6 +283,13 @@ function countParagraphs($rootDOM,$rootXpath) {
 
   // download page from $url and load into $doc
   function downloadArticle ($doc,$url) {
+    // validate url is actually a url
+    if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED) === false) {
+      // failed validation
+      $GLOBALS["error"] = "input url failed validation, please make sure it is valid before trying again";
+      return;
+    }
+
     $actualpage = file_get_contents($url);
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
       $GLOBALS["error"] = "failed to download page";
