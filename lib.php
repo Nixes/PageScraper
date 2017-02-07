@@ -286,13 +286,13 @@ function countParagraphs($rootDOM,$rootXpath) {
     // validate url is actually a url
     if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED) === false) {
       // failed validation
-      $GLOBALS["error"] = "input url failed validation, please make sure it is valid before trying again";
+      $GLOBALS["error"] .= "input url failed validation, please make sure it is valid before trying again ";
       return;
     }
 
     $actualpage = file_get_contents($url);
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
-      $GLOBALS["error"] = "failed to download page";
+      $GLOBALS["error"] .= "failed to download page ";
     }
 
     // determine current page url
@@ -316,7 +316,7 @@ function countParagraphs($rootDOM,$rootXpath) {
     }
 
     if (strlen($GLOBALS["content"]) == 0) {
-      $GLOBALS["error"] = "failed to find article content";
+      $GLOBALS["error"] .= "failed to find article content ";
     }
   }
 ?>
