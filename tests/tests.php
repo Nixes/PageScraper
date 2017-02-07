@@ -36,8 +36,12 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
       $doc->preserveWhiteSpace = FALSE;
       downloadArticle($doc,$url);
       parseArticle($doc);
-      if ( isset($GLOBALS["error"]) ) {
-        echo "Error: ".$GLOBALS["error"]."\n";
+      if ( isset($GLOBALS["error"]) && count($GLOBALS["error"]) > 0 ) {
+        echo "Errors: ";
+        foreach ($GLOBALS["error"] as $error) {
+          echo "  $error\n";
+        }
+        echo "\n";
       }
     }
   }
