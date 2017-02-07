@@ -1,10 +1,11 @@
 <?php
 require 'lib.php';
 
+  // init globals on each run
+  $GLOBALS["content"] = "";
+  $GLOBALS["error"] = array();
+
   if ( isset ( $_GET["targetUrl"]) ) {
-    // init globals on each run
-    $GLOBALS["content"] = "";
-    $GLOBALS["error"] = array();
 
     $doc = new DOMDocument;
     $doc->preserveWhiteSpace = FALSE;

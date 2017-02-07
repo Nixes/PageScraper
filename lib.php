@@ -284,7 +284,7 @@ function countParagraphs($rootDOM,$rootXpath) {
   // download page from $url and load into $doc
   function downloadArticle ($doc,$url) {
     // validate url is actually a url
-    if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED) === false) {
+    if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
       // failed validation
       array_push($GLOBALS["error"], "input url failed validation, please make sure it is valid before trying again");
       return;
