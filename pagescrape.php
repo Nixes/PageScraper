@@ -4,7 +4,7 @@ require 'lib.php';
   if ( isset ( $_GET["targetUrl"]) ) {
     // init globals on each run
     $GLOBALS["content"] = "";
-    $GLOBALS["error"] = "";
+    $GLOBALS["error"] = array();
 
     $doc = new DOMDocument;
     $doc->preserveWhiteSpace = FALSE;
@@ -56,11 +56,13 @@ require 'lib.php';
     echo "<hr>";
   }
 
-  if( isset($GLOBALS["error"]) ) {
+  if(count($GLOBALS["error"]) > 0 ) {
     echo "<div class='error'>
-            <h1>Error</h1>
-            <p>".$GLOBALS["error"]."</p>
-          </div>";
+            <h1>Error</h1>";
+    foreach ($GLOBALS["error"] as $error) {
+      echo "<p>$error</p>";
+    }
+    echo  "</div>";
   } else {
     echo $GLOBALS["content"];
   }
