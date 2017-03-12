@@ -305,6 +305,16 @@ function countParagraphs($rootDOM,$rootXpath) {
     }
   }
 
+  // determine how long it will take to read the article in minutes
+  function calculateReadingTime($content) {
+    $reader_words_per_min = 300;
+    $num_words = str_word_count( strip_tags( strtolower($content) ), 0);
+    if ($num_words > 0) {
+      $reading_time = $num_words / $reader_words_per_min;
+    }
+    return $reading_time;
+  }
+
   // parse the article in doc
   function parseArticle ($doc) {
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
@@ -318,5 +328,8 @@ function countParagraphs($rootDOM,$rootXpath) {
     if (strlen($GLOBALS["content"]) == 0) {
       array_push($GLOBALS["error"],"failed to find article content");
     }
+
+    // determine reading time
+    $GLOBALS["reading_mins"] = calculateReadTime($GLOBALS["content"]);
   }
 ?>

@@ -48,6 +48,11 @@ require 'lib.php';
                   <input type=hidden name='item' value='".$GLOBALS["location"]."' ></input>
                   <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
                   </form><div class='clearfloat'></div>";
+
+  if (isset($GLOBALS["reading_mins"])) {
+    echo "<h2>by ".$GLOBALS["reading_mins"]$GLOBALS["author"]."</h2>";
+    echo "<hr>";
+  }
   if (isset($GLOBALS["title"])) {
     echo "<h1>".$GLOBALS["title"]."</h1>";
     echo "<hr>";
