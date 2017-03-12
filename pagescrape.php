@@ -50,7 +50,7 @@ require 'lib.php';
                   </form><div class='clearfloat'></div>";
 
   if (isset($GLOBALS["reading_mins"])) {
-    echo "<h2>by ".$GLOBALS["reading_mins"]$GLOBALS["author"]."</h2>";
+    echo "<h2>by ".$GLOBALS["reading_mins"]."</h2>";
     echo "<hr>";
   }
   if (isset($GLOBALS["title"])) {
