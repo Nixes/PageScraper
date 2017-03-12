@@ -330,6 +330,6 @@ function countParagraphs($rootDOM,$rootXpath) {
     }
 
     // determine reading time
-    $GLOBALS["reading_mins"] = calculateReadTime($GLOBALS["content"]);
+    $GLOBALS["reading_mins"] = calculateReadingTime($GLOBALS["content"]);
   }
 ?>
