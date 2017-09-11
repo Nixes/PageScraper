@@ -1,6 +1,9 @@
 <?php
 require 'blacklist.php';
 
+  const CACHE_PATH = './cache';
+  const CACHE_TIME = 1800; // time that a page is cached in seconds before retrieving a fresh one
+
   // returns index of array element that contains the largest value
   function findHighestIndex($arr) {
     $highestNo = 0;
@@ -332,4 +335,61 @@ function countParagraphs($rootDOM,$rootXpath) {
     // determine reading time
     $GLOBALS["reading_mins"] = calculateReadingTime($GLOBALS["content"]);
   }
+
+  function getNewArticle($url,$is_academic=false) {
+    // init globals on each run
+    $GLOBALS["content"] = "";
+    $GLOBALS["error"] = array();
+
+
+    $doc = new DOMDocument;
+    $doc->preserveWhiteSpace = false;
+
+    if ( $is_academic == true ) {
+      @$doc->loadHTML( getAcademicPage($url) ); // we don't want to see every parse fail
+    } else {
+      downloadArticle($doc,$url);
+    }
+    parseArticle($doc);
+
+    $article_results = array(
+      'readings_mins' => $GLOBALS["reading_mins"],
+      'title' => $GLOBALS["title"],
+      'author' => $GLOBALS["author"],
+      'error' => $GLOBALS["error"],
+      'content' => $GLOBALS["content"],
+    );
+    return $article_results;
+  }
+
+
+  // function to check for cached version of aricle
+  function getArticle($url) {
+    $encoded_url = base64_encode($url);
+    $cached_path = CACHE_PATH.'/'.$encoded_url.'.json';
+
+    // check file exists
+    if (is_file( $cached_path ) ) {
+      // see how old the file is
+      $time_lapse = (strtotime("now") - filemtime($cached_path));
+      // if it was not too old
+      if ($time_lapse < CACHE_TIME) {
+        // return the cache files contents
+        $cached_article =  json_decode( file_get_contents($cached_path),true);
+        return $cached_article;
+      }
+    }
+
+    // if there was no file or the cache was old, then go get the article
+    $new_article = getNewArticle($url);
+    // and save it
+    file_put_contents($cached_path, json_encode($new_article) );
+
+    return $new_article;
+  }
+
+  function getJson($url,$is_academic=false) {
+    return json_encode(getArticle($url,$is_academic));
+  };
+
 ?>

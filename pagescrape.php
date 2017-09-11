@@ -1,31 +1,13 @@
 <?php
 require 'lib.php';
 
-  // init globals on each run
-  $GLOBALS["content"] = "";
-  $GLOBALS["error"] = array();
-
-  if ( isset ( $_GET["targetUrl"]) ) {
-
-    $doc = new DOMDocument;
-    $doc->preserveWhiteSpace = FALSE;
-
-    if ( isset ( $_GET["debug"]) ) {
-      if ( $_GET["debug"] == true){
-        $GLOBALS["debug"] = 1;
-      }
+  if ( isset ( $_GET["debug"]) ) {
+    if ( $_GET["debug"] == true){
+      $GLOBALS["debug"] = 1;
     }
-    if ( isset ( $_GET["academic"]) ) {
-      if ( $_GET["academic"] == true){
-        echo "<p>Was an academic source, getting access past pay-wall...</p>";
-        //echo "<p>Get Academic Returned: ".getAcademicPage($_GET["targetUrl"])."</p>";
-        @$doc->loadHTML( getAcademicPage($_GET["targetUrl"]) ); // we don't want to see every parse fail
-      }
-    } else {
-      downloadArticle($doc,$_GET["targetUrl"]);
-    }
-      parseArticle($doc);
   }
+  $article = getArticle($_GET["targetUrl"] ,$_GET["academic"]);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +16,7 @@ require 'lib.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
-    echo "<title>".$GLOBALS["title"]."</title>";
+    echo "<title>".$article["title"]."</title>";
      ?>
 </head>
 
@@ -49,28 +31,28 @@ require 'lib.php';
                   <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
                   </form><div class='clearfloat'></div>";
 
-  if (isset($GLOBALS["reading_mins"])) {
-    echo "<h2>".round($GLOBALS["reading_mins"],1)." minutes read</h2>";
+  if (isset($article["reading_mins"])) {
+    echo "<h2>".round($article["reading_mins"],1)." minutes read</h2>";
     echo "<hr>";
   }
-  if (isset($GLOBALS["title"])) {
-    echo "<h1>".$GLOBALS["title"]."</h1>";
+  if (isset($article["title"])) {
+    echo "<h1>".$article["title"]."</h1>";
     echo "<hr>";
   }
-  if (isset($GLOBALS["author"])) {
-    echo "<h2>by ".$GLOBALS["author"]."</h2>";
+  if (isset($article["author"])) {
+    echo "<h2>by ".$article["author"]."</h2>";
     echo "<hr>";
   }
 
-  if(count($GLOBALS["error"]) > 0 ) {
+  if(count($article["error"]) > 0 ) {
     echo "<div class='error'>
             <h1>Error</h1>";
-    foreach ($GLOBALS["error"] as $error) {
+    foreach ($article["error"] as $error) {
       echo "<p>$error</p>";
     }
     echo  "</div>";
   } else {
-    echo $GLOBALS["content"];
+    echo $article["content"];
   }
 ?>
 </div>
