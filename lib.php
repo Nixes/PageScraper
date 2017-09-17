@@ -353,7 +353,7 @@ function countParagraphs($rootDOM,$rootXpath) {
     parseArticle($doc);
 
     $article_results = array(
-      'readings_mins' => $GLOBALS["reading_mins"],
+      'reading_mins' => $GLOBALS["reading_mins"],
       'title' => $GLOBALS["title"],
       'author' => $GLOBALS["author"],
       'error' => $GLOBALS["error"],

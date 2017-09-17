@@ -7,7 +7,6 @@ require 'lib.php';
     }
   }
   $article = getArticle($_GET["targetUrl"] ,$_GET["academic"]);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,15 +30,15 @@ require 'lib.php';
                   <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
                   </form><div class='clearfloat'></div>";
 
-  if (isset($article["reading_mins"])) {
+  if ( $article["reading_mins"] != null ) {
     echo "<h2>".round($article["reading_mins"],1)." minutes read</h2>";
     echo "<hr>";
   }
-  if (isset($article["title"])) {
+  if ( $article["title"] != null ) {
     echo "<h1>".$article["title"]."</h1>";
     echo "<hr>";
   }
-  if (isset($article["author"])) {
+  if ( $article["author"] != null ) {
     echo "<h2>by ".$article["author"]."</h2>";
     echo "<hr>";
   }
