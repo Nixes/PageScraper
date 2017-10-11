@@ -37,7 +37,7 @@ class Page {
   /**
    * @return string
    */
-  public function getLocation(): string {
+  public function getLocation() {
     return $this->location;
   }
 
@@ -54,7 +54,7 @@ class Page {
   /**
    * @return string
    */
-  public function getAuthor(): string {
+  public function getAuthor() {
     return $this->author;
   }
 
@@ -71,7 +71,7 @@ class Page {
   /**
    * @return string
    */
-  public function getContent(): string {
+  public function getContent() {
     return $this->content;
   }
 
@@ -88,7 +88,7 @@ class Page {
   /**
    * @return string
    */
-  public function getTitle(): string {
+  public function getTitle() {
     return $this->title;
   }
 
@@ -105,7 +105,7 @@ class Page {
   /**
    * @return int
    */
-  public function getReading_mins(): int {
+  public function getReading_mins() {
     return $this->reading_mins;
   }
 
@@ -122,7 +122,7 @@ class Page {
   /**
    * @return string[]
    */
-  public function getError(): array {
+  public function getError() {
     return $this->error;
   }
 
