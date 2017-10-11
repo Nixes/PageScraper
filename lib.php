@@ -6,7 +6,7 @@ require 'blacklist.php';
   const CACHE_PATH = './cache';
   const CACHE_TIME = 1800; // time that a page is cached in seconds before retrieving a fresh one
 
-class Page {
+class Page implements JsonSerializable {
   /**
   * @var string $location
    */
@@ -25,14 +25,14 @@ class Page {
   private $title;
 
   /**
-   * @var int $reading_mins
+   * @var int $readingMins
    */
-  private $reading_mins;
+  private $readingMins;
 
   /**
-   * @var string[] $error
+   * @var string[] $errors
    */
-  private $error;
+  private $errors;
 
   /**
    * @return string
@@ -46,7 +46,7 @@ class Page {
    *
    * @return static
    */
-  public function setLocation(string $location) {
+  public function setLocation($location) {
     $this->location = $location;
     return $this;
   }
@@ -63,7 +63,7 @@ class Page {
    *
    * @return static
    */
-  public function setAuthor(string $author) {
+  public function setAuthor($author) {
     $this->author = $author;
     return $this;
   }
@@ -80,7 +80,7 @@ class Page {
    *
    * @return static
    */
-  public function setContent(string $content) {
+  public function setContent($content) {
     $this->content = $content;
     return $this;
   }
@@ -97,7 +97,7 @@ class Page {
    *
    * @return static
    */
-  public function setTitle(string $title) {
+  public function setTitle($title) {
     $this->title = $title;
     return $this;
   }
@@ -105,44 +105,83 @@ class Page {
   /**
    * @return int
    */
-  public function getReading_mins() {
-    return $this->reading_mins;
+  public function getReadingMins() {
+      return $this->readingMins;
   }
 
   /**
-   * @param int $reading_mins
+   * @param int $readingMins
    *
    * @return static
    */
-  public function setReading_mins(int $reading_mins) {
-    $this->reading_mins = $reading_mins;
-    return $this;
+  public function setReadingMins($readingMins){
+      $this->readingMins = $readingMins;
+      return $this;
   }
 
   /**
    * @return string[]
    */
-  public function getError() {
-    return $this->error;
+  public function getErrors() {
+    return $this->errors;
   }
 
   /**
-   * @param string[] $error
+   * @param string[] $errors
    *
    * @return static
    */
-  public function setError(array $error) {
-    $this->error = $error;
+  public function setErrors(array $errors) {
+    $this->errors = $errors;
     return $this;
+  }
+
+  public function addError($error) {
+    $this->errors[] = $error;
+  }
+  /**
+   * Takes in raw json string and returns an instance of this object
+   * @param string|array $json
+   * @return Page
+   */
+  public static function deserialize($json) {
+      $className = get_called_class();
+      $classInstance = new $className();
+      if (is_string($json))
+          $json = json_decode($json);
+
+      foreach ($json as $key => $value) {
+          if (!property_exists($classInstance, $key)) continue;
+
+          $classInstance->$key = $value;
+      }
+
+      return $classInstance;
+  }
+
+  function jsonSerialize() {
+      return get_object_vars($this);
   }
 }
 
 class Pagescraper {
+/**
+ * @var Page $page
+ */
   private $page;
   /**
    * @var int $debug
    */
   private $debug;
+
+
+
+  /**
+   * Constructor
+   */
+  function __construct() {
+      $this->page = new Page;
+  }
 
   /**
    * returns index of array element that contains the largest value
@@ -271,7 +310,7 @@ class Pagescraper {
       echo "</br></br><h1>Filtered Content (only text from paragraphs kept)</h1>";
     }
     if ( isset($DOMNode->tagName) ) {
-      $this->content = $this->getParagraphs($DOMNode);
+      $this->page->setContent( $this->getParagraphs($DOMNode) );
     }
   }
 
@@ -283,14 +322,14 @@ class Pagescraper {
     foreach ( $childNodes as $childNode) {
       if ( isset($childNode->tagName) ) {
         if ($childNode->tagName == "title") {
-          $this->title = $childNode->nodeValue;
+          $this->page->setTitle( $childNode->nodeValue );
         }
         if ($childNode->tagName == "meta" && $childNode->hasAttributes() && null !== $childNode->attributes->getNamedItem("name") ) {
           if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
-            $this->title = $childNode->attributes->getNamedItem("content")->nodeValue;
+            $this->page->setTitle( $childNode->attributes->getNamedItem("content")->nodeValue );
           }
           if ($childNode->attributes->getNamedItem("name")->nodeValue == "author") {
-            $this->author = $childNode->attributes->getNamedItem("content")->nodeValue;
+            $this->page->setAuthor( $childNode->attributes->getNamedItem("content")->nodeValue );
           }
         }
       }
@@ -475,13 +514,13 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     // validate url is actually a url
     if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
       // failed validation
-      array_push($this->errors, "input url failed validation, please make sure it is valid before trying again");
+      $this->page->addError("input url failed validation, please make sure it is valid before trying again");
       return;
     }
 
     $actualpage = file_get_contents($url);
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
-      array_push($this->errors, "failed to download page");
+      $this->page->addError("failed to download page");
     }
 
     // determine current page url
@@ -520,12 +559,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       $this->checkNode($doc,$xpath,0);
     }
 
-    if (strlen($this->content) == 0) {
-      array_push($this->errors,"failed to find article content");
+    if (strlen($this->page->getContent()) == 0) {
+      $this->page->addError("failed to find article content");
     }
 
     // determine reading time
-    $this->reading_mins = $this->calculateReadingTime($this->content);
+    $this->page->setReadingMins( $this->calculateReadingTime($this->page->getContent()) );
   }
 
   /**
@@ -533,10 +572,6 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    * @param bool  $is_academic
    */
   function getNewArticle($url,$is_academic=false) {
-    // init globals on each run
-    $this->content = "";
-    $this->errors = array();
-
 
     $doc = new DOMDocument;
     $doc->preserveWhiteSpace = false;
@@ -548,14 +583,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     }
     $this->parseArticle($doc);
 
-    $article_results = array(
-      'reading_mins' => $this->reading_mins,
-      'title' => $this->title,
-      'author' => $this->author,
-      'error' => $this->errors,
-      'content' => $this->content,
-    );
-    return $article_results;
+    return $this->page;
   }
 
 
@@ -575,7 +603,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       // if it was not too old
       if ($time_lapse < CACHE_TIME) {
         // return the cache files contents
-        $cached_article =  json_decode( file_get_contents($cached_path),true);
+        $cached_article =  Page::deserialize( file_get_contents($cached_path) );
         return $cached_article;
       }
     }
