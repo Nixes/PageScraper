@@ -144,12 +144,12 @@ class Pagescraper {
    */
   private $debug;
 
-  // returns index of array element that contains the largest value
   /**
+   * returns index of array element that contains the largest value
    * @param int[] $arr
    * @return int
    */
-  private function findHighestIndex($arr) {
+  private function findHighestIndex(array $arr) {
     $highestNo = 0;
     $indexHighestNo = 0;
     for ( $i=0; $i < count($arr); $i++ ) {
@@ -161,11 +161,11 @@ class Pagescraper {
     return $indexHighestNo;
   }
 
-  // this function differs from other recursive functions below in that it actually remove nodes that fit a certain criteria
   /**
-   * @param DOMDocument $DOMNode
+   * this function differs from other recursive functions below in that it actually remove nodes that fit a certain criteria
+   * @param DOMNode $DOMNode
    */
-  private function removeJunk(DOMDocument $DOMNode) {
+  private function removeJunk(DOMNode $DOMNode) {
     if ($DOMNode->hasChildNodes()) {
       $childNodes = $DOMNode->childNodes;
       for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
@@ -183,8 +183,8 @@ class Pagescraper {
     }
   }
 
-  // a function that converts a relative style url to an absolute one, works on resources and urls
   /**
+   * a function that converts a relative style url to an absolute one, works on resources and urls
    * @param string $url
    */
   private function convertRelToAbs($url) {
@@ -202,10 +202,10 @@ class Pagescraper {
   }
 
   /**
-   * @param DOMDocument $DOMNode
+   * @param DOMNode $DOMNode
    * @return string
    */
-  private function getParagraphs(DOMDocument $DOMNode) {
+  private function getParagraphs(DOMNode $DOMNode) {
     $currentTag = $DOMNode->tagName;
     $content = "";
 
@@ -260,8 +260,11 @@ class Pagescraper {
     return $content;
   }
 
-  // will remove junk (injected javascript, small images) from input element
-  private function processContent (DOMDocument $DOMNode) {
+/**
+ * will remove junk (injected javascript, small images) from input element
+ * @param DOMNode $DOMNode
+ */
+  private function processContent (DOMNode $DOMNode) {
     if (isset($this->debug) && $this->debug==1) {
       echo "</br></br><h1>Found from: ".$DOMNode->getNodePath()."</h1><p>".$DOMNode->textContent."</p>";
       // next get only the content of <p> elements found under this branch
@@ -272,7 +275,10 @@ class Pagescraper {
     }
   }
 
-  private function parseHtmlHeader (DOMDocument $DOMNode) {
+/**
+ * @param DOMNode $DOMNode
+ */
+  private function parseHtmlHeader (DOMNode $DOMNode) {
     $childNodes = $DOMNode->childNodes;
     foreach ( $childNodes as $childNode) {
       if ( isset($childNode->tagName) ) {
@@ -292,10 +298,10 @@ class Pagescraper {
   }
 
 /**
- * @param DOMDocument $rootDOM
+ * @param DOMNode $rootDOM
  * @param DOMXPath    $rootXpath
  */
-private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
+private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   $paragraphCounts = array();
     foreach ($rootDOM->childNodes as $childNode) {
       if (isset($childNode->tagName) && $childNode->tagName == "head") {
@@ -315,13 +321,13 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
     return $paragraphCounts;
 }
 
-  // check the nodes at each level and follow the one which had the highest no. of <p> within
   /**
-   * @param DOMDocument $rootDOM
+   * check the nodes at each level and follow the one which had the highest no. of <p> within
+   * @param DOMNode $rootDOM
    * @param DOMXPath    $rootXpath
    * @param int       $lastHighest
    */
-  private function checkNode(DOMDocument $rootDOM, DOMXPath $rootXpath,$lastHighest) {
+  private function checkNode(DOMNode $rootDOM, DOMXPath $rootXpath,$lastHighest) {
       $paragraphCounts = $this->countParagraphs($rootDOM,$rootXpath);
 
       // if more than 50% less paragraphs, send parentNode to be output
@@ -359,8 +365,8 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
     }
   }
 
-  // convert raw http headers to associative array
   /**
+   * convert raw http headers to associative array
    * @param string[]  $headers
    */
   private function parseHeaders( $headers ) {
@@ -460,12 +466,12 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
     return $response;
   }
 
-  // download page from $url and load into $doc
   /**
+   * download page from $url and load into $doc
    * @param DOMDocument $doc
    * @param string $url
    */
-  function downloadArticle($doc,$url) {
+  function downloadArticle(DOMDocument $doc,$url) {
     // validate url is actually a url
     if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
       // failed validation
@@ -488,7 +494,10 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
     }
   }
 
-  // determine how long it will take to read the article in minutes
+/**
+ * determine how long it will take to read the article in minutes
+ * @param string $content
+ */
   private function calculateReadingTime($content) {
     $reader_words_per_min = 300;
     $num_words = str_word_count( strip_tags( strtolower($content) ), 0);
@@ -498,8 +507,8 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
     return $reading_time;
   }
 
-  // parse the article in doc
   /**
+   * parse the article in doc
    * @param DOMDocument $doc
    */
   private function parseArticle (DOMDocument $doc) {
@@ -550,12 +559,12 @@ private function countParagraphs(DOMDocument $rootDOM,DOMXPath $rootXpath) {
   }
 
 
-  // function to check for cached version of aricle
   /**
+   * function to check for cached version of aricle
    * @param string $url
    * @return Page
    */
-  public function getArticle(String $url) {
+  public function getArticle($url) {
     $encoded_url = base64_encode($url);
     $cached_path = CACHE_PATH.'/'.$encoded_url.'.json';
 
