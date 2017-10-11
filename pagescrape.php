@@ -1,12 +1,14 @@
 <?php
 require 'lib.php';
 
+$pageScraper = new Pagescraper;
+
   if ( isset ( $_GET["debug"]) ) {
     if ( $_GET["debug"] == true){
       $GLOBALS["debug"] = 1;
     }
   }
-  $article = getArticle($_GET["targetUrl"] ,$_GET["academic"]);
+  $article = $pageScraper->getArticle($_GET["targetUrl"] ,$_GET["academic"]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +28,7 @@ require 'lib.php';
   echo "<a href='".$_GET["targetUrl"]."' id=origin_page>Original Page</a>";
   echo "<form action='../../private/readinglist/itemQuery.php' method='post'>
                   <input type=hidden name='itemsRequestType' value='add' ></input>
-                  <input type=hidden name='item' value='".$GLOBALS["location"]."' ></input>
+                  <input type=hidden name='item' value='".$article["location"]."' ></input>
                   <button id='read_it_later_button' type='submit' value='Read It Later'>Read It Later</button>
                   </form><div class='clearfloat'></div>";
 
