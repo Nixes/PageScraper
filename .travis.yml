@@ -20,5 +20,4 @@ matrix:
 
 before_script:
   - composer update
-  - composer install
 script: vendor/bin/phpunit --configuration phpunit.xml --coverage-text
