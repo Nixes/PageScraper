@@ -225,8 +225,9 @@ class Pagescraper {
   /**
    * a function that converts a relative style url to an absolute one, works on resources and urls
    * @param string $url
+   * @param string $location
    */
-  private function convertRelToAbs($url) {
+  private function convertRelToAbs($url, $location) {
     $path = $url;
     if (!empty($path)) {
       if ((substr($url, 0, 7) == 'http://') || (substr($url, 0, 8) == 'https://')) {
@@ -234,8 +235,9 @@ class Pagescraper {
         return $url;
       } else {
         // url is relative
-        $parsed_url = parse_url( $this->location );
-        return $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+        $parsed_url = parse_url( $location );
+        $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+        return $result;
       }
     }
   }
@@ -254,7 +256,7 @@ class Pagescraper {
       // this loop here check for any other inline formating within the paragraph
       foreach($DOMNode->childNodes as $node) {
         if (isset($node->tagName) && $node->tagName =="a") {
-          $content .= "<a href='". $this->convertRelToAbs( $node->attributes->getNamedItem("href")->nodeValue ) ."'>".$node->nodeValue."</a>";
+          $content .= "<a href='". $this->convertRelToAbs( $node->attributes->getNamedItem("href")->nodeValue,$this->page->getLocation() ) ."'>".$node->nodeValue."</a>";
         } else {
           $content .= $node->nodeValue;
         }
@@ -262,7 +264,7 @@ class Pagescraper {
       $content .= "</p>";
     }
     if ($currentTag =="img" ) {
-      $content = "<div class='img_container'><img src='". $this->convertRelToAbs( $DOMNode->attributes->getNamedItem("src")->nodeValue ) ."' style='vertical-align:middle'></img></div>";
+      $content = "<div class='img_container'><img src='". $this->convertRelToAbs( $DOMNode->attributes->getNamedItem("src")->nodeValue,$this->page->getLocation() ) ."' style='vertical-align:middle'></img></div>";
     }
     //blacklist, if one of these elements are found, stop here as any further processing is a waste of time
     if ($currentTag =="aside" ) {
