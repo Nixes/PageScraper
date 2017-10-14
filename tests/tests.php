@@ -1,8 +1,6 @@
 <?php
 require 'lib.php';
 
-class TestPageScraper extends PHPUnit_Framework_TestCase {
-
 /**
  * function that uses reflection to get allow executing private methods within an object for testing
  * @param object $obj
@@ -15,6 +13,8 @@ function callMethod($obj, $method_name, array $args) {
   $method->setAccessible(true);
   return $method->invokeArgs($obj, $args);
 }
+
+class TestPageScraper extends PHPUnit_Framework_TestCase {
 
   public function test_findHighestIndex () {
     $test_array = array(0,2,5,7,9,10,50);
