@@ -34,7 +34,7 @@ class TestPageScraper extends PHPUnit_Framework_TestCase {
       $pageScraper = new Pagescraper;
       echo "Testing against page: ".$url;
       $article = $pageScraper->getArticle($url);
-      if ( isset($article->getErrors()) && count($article->getErrors()) > 0 ) {
+      if ( $article->getErrors() !== null && count($article->getErrors()) > 0 ) {
         echo "Errors: ";
         foreach ($article->getErrors() as $error) {
           echo "  $error\n";
