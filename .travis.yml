@@ -18,8 +18,4 @@ matrix:
     - php: 7.0
   fast_finish: true
 
-before_script:
-  - composer update
-  - composer install
-
-script: vendor/bin/phpunit --configuration phpunit.xml --coverage-text
+script: phpunit --configuration phpunit.xml --coverage-text
