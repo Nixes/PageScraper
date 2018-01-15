@@ -599,7 +599,9 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
           if (isset($metadata->tagName) && $metadata->tagName === 'link' ) {
               if ($metadata->getAttribute('rel') === 'amphtml') {
                   $ampLink = $metadata->getAttribute('href');
-                  echo "Found amp link: ".$ampLink."\n";
+                  if (isset($this->debug) && $this->debug==1) {
+                      echo "Found amp link: ".$ampLink."\n";
+                  }
                   return $ampLink;
               }
           }
