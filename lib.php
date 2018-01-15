@@ -569,6 +569,35 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     $this->page->setReadingMins( $this->calculateReadingTime($this->page->getContent()) );
   }
 
+  private function getElementByTagNameInChildNodes(string $tagName,DOMNode $DOMNode) {
+      foreach($DOMNode->childNodes as $childNode) {
+          if (isset($childNode->tagName) && $childNode->tagName === $tagName) {
+              return $childNode;
+          }
+      }
+  }
+
+  private function checkAmpVersion($rootNode) {
+      $rootNode->encoding = 'utf-8'; // TODO: implement better website encoding detection
+
+      // search for html header (where amp links are found)
+      $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+      $head = $this->getElementByTagNameInChildNodes('head',$html);
+      // next search for amp link
+      foreach ($head->childNodes as $metadata) {
+          if (isset($metadata->tagName) && $metadata->tagName === 'link' ) {
+              if ($metadata->getAttribute('rel') === 'amphtml') {
+                  $ampLink = $metadata->getAttribute('href');
+                  echo "Found amp link: ".$ampLink."\n";
+                  return $ampLink;
+              }
+          }
+      }
+
+
+      return null;
+  }
+
   /**
    * @param string $url
    * @param bool  $is_academic
@@ -583,6 +612,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     } else {
       $this->downloadArticle($doc,$url);
     }
+    // if there is an amp version of the article use that instead (allows bypassing mulitple page limits)
+    $ampLink = $this->checkAmpVersion($doc);
+    if ($ampLink !== null) {
+        return $this->getNewArticle($ampLink ,$is_academic);
+    }
+
     $this->parseArticle($doc);
 
     return $this->page;
