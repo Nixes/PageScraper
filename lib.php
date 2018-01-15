@@ -582,7 +582,9 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 
       // search for html header (where amp links are found)
       $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+      if ($html === null) return;
       $head = $this->getElementByTagNameInChildNodes('head',$html);
+      if ($head === null) return;
       // next search for amp link
       foreach ($head->childNodes as $metadata) {
           if (isset($metadata->tagName) && $metadata->tagName === 'link' ) {
