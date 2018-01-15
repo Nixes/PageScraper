@@ -569,7 +569,13 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     $this->page->setReadingMins( $this->calculateReadingTime($this->page->getContent()) );
   }
 
-  private function getElementByTagNameInChildNodes(string $tagName,DOMNode $DOMNode) {
+/**
+ * Returns an DOMNode that has the tag specified from children directly under, not recursive
+ * @param string   $tagName
+ * @param DOMNode $DOMNode
+ * @return DOMNode|null
+ */
+  private function getElementByTagNameInChildNodes($tagName,DOMNode $DOMNode) {
       foreach($DOMNode->childNodes as $childNode) {
           if (isset($childNode->tagName) && $childNode->tagName === $tagName) {
               return $childNode;
@@ -577,8 +583,11 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       }
   }
 
-  private function checkAmpVersion($rootNode) {
-      $rootNode->encoding = 'utf-8'; // TODO: implement better website encoding detection
+/**
+ * @param DOMDocument $rootNode
+ */
+  private function checkAmpVersion(DOMDocument $rootNode) {
+      $rootNode->encoding = 'utf-8';
 
       // search for html header (where amp links are found)
       $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
