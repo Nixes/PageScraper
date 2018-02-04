@@ -3,9 +3,21 @@
 require 'blacklist.php';
 
 class Pagescraper {
-/**
- * @var Page $page
- */
+
+  /**
+   * @var string CACHE_PATH
+   */
+  const CACHE_PATH = './cache';
+
+  /**
+   * time that a page is cached in seconds before retrieving a fresh one
+   * @var int CACHE_TIME
+   */
+  const CACHE_TIME = 1800;
+
+  /**
+   * @var Page $page
+   */
   private $page;
   /**
    * @var int $debug
@@ -480,14 +492,14 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    */
   public function getArticle($url) {
     $encoded_url = base64_encode($url);
-    $cached_path = CACHE_PATH.'/'.$encoded_url.'.json';
+    $cached_path = Pagescraper::CACHE_PATH.'/'.$encoded_url.'.json';
 
     // check file exists
     if (is_file( $cached_path ) ) {
       // see how old the file is
       $time_lapse = (strtotime("now") - filemtime($cached_path));
       // if it was not too old
-      if ($time_lapse < CACHE_TIME) {
+      if ($time_lapse < Pagescraper::CACHE_TIME) {
         // return the cache files contents
         $cached_article =  Page::deserialize( file_get_contents($cached_path) );
         return $cached_article;
