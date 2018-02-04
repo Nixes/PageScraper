@@ -128,7 +128,7 @@ class Pagescraper {
         if (isset($node->tagName) && $node->tagName =="a") {
           $content .= "<a href='". $this->convertRelToAbs( $node->attributes->getNamedItem("href")->nodeValue,$this->page->getLocation() ) ."'>".$node->nodeValue."</a>";
         } else {
-          $content .= $node->textContent;
+          $content .= $node->nodeValue;
         }
       }
       $content .= "</p>";
@@ -164,7 +164,7 @@ class Pagescraper {
       // if there is a blockquote but it does not contain any further nodes, then do this simply
       if ($currentTag =="blockquote" ) {
         $content .= "<blockquote>";
-        $content .= $DOMNode->textContent;
+        $content .= $DOMNode->nodeValue;
         $content .= "</blockquote>";
       }
     }
