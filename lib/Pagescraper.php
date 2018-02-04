@@ -405,6 +405,48 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     $this->page->setReadingMins( $this->calculateReadingTime($this->page->getContent()) );
   }
 
+/**
+ * Returns an DOMNode that has the tag specified from children directly under, not recursive
+ * @param string   $tagName
+ * @param DOMNode $DOMNode
+ * @return DOMNode|null
+ */
+  private function getElementByTagNameInChildNodes($tagName,DOMNode $DOMNode) {
+      foreach($DOMNode->childNodes as $childNode) {
+          if (isset($childNode->tagName) && $childNode->tagName === $tagName) {
+              return $childNode;
+          }
+      }
+  }
+
+/**
+ * @param DOMDocument $rootNode
+ */
+  private function checkAmpVersion(DOMDocument $rootNode) {
+      $rootNode->encoding = 'utf-8';
+
+      // search for html header (where amp links are found)
+      $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+      if ($html === null) return;
+      $head = $this->getElementByTagNameInChildNodes('head',$html);
+      if ($head === null) return;
+      // next search for amp link
+      foreach ($head->childNodes as $metadata) {
+          if (isset($metadata->tagName) && $metadata->tagName === 'link' ) {
+              if ($metadata->getAttribute('rel') === 'amphtml') {
+                  $ampLink = $metadata->getAttribute('href');
+                  if (isset($this->debug) && $this->debug==1) {
+                      echo "Found amp link: ".$ampLink."\n";
+                  }
+                  return $ampLink;
+              }
+          }
+      }
+
+
+      return null;
+  }
+
   /**
    * @param string $url
    * @param bool  $is_academic
@@ -419,6 +461,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     } else {
       $this->downloadArticle($doc,$url);
     }
+    // if there is an amp version of the article use that instead (allows bypassing mulitple page limits)
+    $ampLink = $this->checkAmpVersion($doc);
+    if ($ampLink !== null) {
+        return $this->getNewArticle($ampLink ,$is_academic);
+    }
+
     $this->parseArticle($doc);
 
     return $this->page;
