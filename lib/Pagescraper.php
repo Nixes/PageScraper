@@ -1,7 +1,9 @@
 <?php
-
 require 'blacklist.php';
 
+/**
+ * Pagescraper
+ */
 class Pagescraper {
 
   /**
@@ -189,6 +191,7 @@ class Pagescraper {
 /**
  * @param DOMNode $rootDOM
  * @param DOMXPath    $rootXpath
+ * @return array
  */
 private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   $paragraphCounts = array();
@@ -243,6 +246,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 
   /**
    * @param string $header
+   * @return string|null
    */
   private function parseHeaderLocation($header) {
     $pattern = "/^Location:\s*(.*)$/i";
@@ -257,6 +261,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   /**
    * convert raw http headers to associative array
    * @param string[]  $headers
+   * @return array
    */
   private function parseHeaders( $headers ) {
     $head = array();
@@ -275,7 +280,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 
   // function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
   // used due to the lack of curl on this server which I am in no position to fix
-  private function http_post_flds($url, $data, $cookie,$headers=null) {
+  private function httpPostFlds($url, $data, $cookie,$headers=null) {
     $data = http_build_query($data);
     $opts = array('http' => array(
       'method' => 'POST',
@@ -297,7 +302,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     return stream_get_contents($fp);
   }
 
-  private function http_get($url,$cookie) {
+  private function httpGet($url,$cookie) {
     $opts = array('http' => array(
       'method' => 'GET',
       'max_redirects' => '10',
@@ -316,6 +321,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   /**
    * @param string $targetUrl
    * @param mixed $data
+   * @return array|null
    */
   private function getCookie($targetUrl, $data) {
     $data = http_build_query($data);
@@ -350,7 +356,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   private function getAcademicPage($targetUrl) {
     // TODO: ask for user credentials before supplying access to academic content (to prevent abuse)
     // magic code removed for licensing / legal reasons
-    $response = http_get($targetUrl); // should now follow redirects
+    $response = $this->httpGet($targetUrl); // should now follow redirects
     //echo "<p>Response was: ".$response."</p>";
     return $response;
   }
@@ -386,6 +392,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 /**
  * determine how long it will take to read the article in minutes
  * @param string $content
+ * @return float
  */
   private function calculateReadingTime($content) {
     $reader_words_per_min = 300;
@@ -432,7 +439,9 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   }
 
 /**
+ * Returns url string of amp url if found, otherwise returns null
  * @param DOMDocument $rootNode
+ * @return string|null
  */
   private function checkAmpVersion(DOMDocument $rootNode) {
       $rootNode->encoding = 'utf-8';
@@ -462,6 +471,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   /**
    * @param string $url
    * @param bool  $is_academic
+   * @return Page
    */
   function getNewArticle($url,$is_academic=false) {
 
