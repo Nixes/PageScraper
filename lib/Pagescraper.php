@@ -31,6 +31,7 @@ class Pagescraper {
    */
   function __construct() {
       $this->page = new Page;
+      $this->setDebug(false);
   }
 
   /**
