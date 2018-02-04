@@ -278,8 +278,14 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     return $head;
   }
 
-  // function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
-  // used due to the lack of curl on this server which I am in no position to fix
+  /**
+   * function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
+   * used due to the lack of curl on this server which I am in no position to fix
+   * @param mixed $url
+   * @param mixed $data
+   * @param mixed $cookie
+   * @param null  $headers
+   */
   private function httpPostFlds($url, $data, $cookie,$headers=null) {
     $data = http_build_query($data);
     $opts = array('http' => array(
@@ -302,6 +308,10 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     return stream_get_contents($fp);
   }
 
+  /**
+   * @param mixed $url
+   * @param mixed $cookie
+   */
   private function httpGet($url,$cookie) {
     $opts = array('http' => array(
       'method' => 'GET',
@@ -409,7 +419,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    */
   private function parseArticle (DOMDocument $doc) {
     $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
-    $xpath = new DOMXpath($doc);
+    $xpath = new DOMXPath($doc);
 
     $this->removeJunk($doc);
     if ($doc->hasChildNodes()) {
