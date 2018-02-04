@@ -6,7 +6,7 @@ $pageScraper = new Pagescraper;
 
   if ( isset ( $_GET["debug"]) ) {
     if ( $_GET["debug"] == true){
-      $GLOBALS["debug"] = 1;
+      $pageScraper->setDebug(true);
     }
   }
   $article = $pageScraper->getArticle($_GET["targetUrl"] ,$_GET["academic"]);

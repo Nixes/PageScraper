@@ -22,7 +22,7 @@ class Pagescraper {
    */
   private $page;
   /**
-   * @var int $debug
+   * @var bool $debug
    */
   private $debug;
 
@@ -31,6 +31,25 @@ class Pagescraper {
    */
   function __construct() {
       $this->page = new Page;
+  }
+
+  /**
+   * @param bool $debug
+   *
+   * @return static
+   */
+  public function setDebug(bool $debug)
+  {
+    $this->debug = $debug;
+    return $this;
+  }
+
+  /**
+   * @return bool
+   */
+  public function getDebug()
+  {
+    return $this->debug;
   }
 
   /**
@@ -156,7 +175,7 @@ class Pagescraper {
  * @param DOMNode $DOMNode
  */
   private function processContent (DOMNode $DOMNode) {
-    if (isset($this->debug) && $this->debug==1) {
+    if ($this->getDebug()) {
       echo "</br></br><h1>Found from: ".$DOMNode->getNodePath()."</h1><p>".$DOMNode->textContent."</p>";
       // next get only the content of <p> elements found under this branch
       echo "</br></br><h1>Filtered Content (only text from paragraphs kept)</h1>";
@@ -201,13 +220,13 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       }
       $childNodeLocation = $childNode->getNodePath();
       $childNodeParagraphs = $rootXpath->query('.//p', $childNode)->length;
-      if (isset($this->debug) && $this->debug==1) {
+      if ($this->getDebug()) {
         echo "<p>No of sub elements: ".$childNodeParagraphs."</p>";
         echo "<p> Location: ".$childNodeLocation."</p>";
       }
       array_push($paragraphCounts, $childNodeParagraphs);
     }
-    if (isset($this->debug) && $this->debug==1) {
+    if ($this->getDebug()) {
       echo "</br>";
     }
     return $paragraphCounts;
@@ -228,7 +247,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
         $this->processContent($rootDOM);
       } else {
         $lastHighest = max($paragraphCounts);
-        if (isset($this->debug) && $this->debug==1) {
+        if ($this->getDebug()) {
           echo "<p>From Above. The highest no of p were found in index no:".($this->findHighestIndex($paragraphCounts)+1).". With a total of ".$lastHighest." paragraphs.</p>";
           echo "<p>Paragraph counts: ";
           foreach($paragraphCounts as $pCount) {
@@ -466,7 +485,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
           if (isset($metadata->tagName) && $metadata->tagName === 'link' ) {
               if ($metadata->getAttribute('rel') === 'amphtml') {
                   $ampLink = $metadata->getAttribute('href');
-                  if (isset($this->debug) && $this->debug==1) {
+                  if ($this->getDebug()) {
                       echo "Found amp link: ".$ampLink."\n";
                   }
                   return $ampLink;
