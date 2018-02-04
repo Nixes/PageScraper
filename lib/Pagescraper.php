@@ -1,180 +1,28 @@
 <?php
+
 require 'blacklist.php';
 
-
-
-  const CACHE_PATH = './cache';
-  const CACHE_TIME = 1800; // time that a page is cached in seconds before retrieving a fresh one
-
-class Page implements JsonSerializable {
-  /**
-  * @var string $location
-   */
-  private $location;
-  /**
-   * @var string $author
-   */
-  private $author;
-  /**
-   * @var string $content
-   */
-  private $content;
-  /**
-   * @var string $title
-   */
-  private $title;
-
-  /**
-   * @var int $readingMins
-   */
-  private $readingMins;
-
-  /**
-   * @var string[] $errors
-   */
-  private $errors;
-
-  /**
-   * @return string
-   */
-  public function getLocation() {
-    return $this->location;
-  }
-
-  /**
-   * @param string $location
-   *
-   * @return static
-   */
-  public function setLocation($location) {
-    $this->location = $location;
-    return $this;
-  }
-
-  /**
-   * @return string
-   */
-  public function getAuthor() {
-    return $this->author;
-  }
-
-  /**
-   * @param string $author
-   *
-   * @return static
-   */
-  public function setAuthor($author) {
-    $this->author = $author;
-    return $this;
-  }
-
-  /**
-   * @return string
-   */
-  public function getContent() {
-    return $this->content;
-  }
-
-  /**
-   * @param string $content
-   *
-   * @return static
-   */
-  public function setContent($content) {
-    $this->content = $content;
-    return $this;
-  }
-
-  /**
-   * @return string
-   */
-  public function getTitle() {
-    return $this->title;
-  }
-
-  /**
-   * @param string $title
-   *
-   * @return static
-   */
-  public function setTitle($title) {
-    $this->title = $title;
-    return $this;
-  }
-
-  /**
-   * @return int
-   */
-  public function getReadingMins() {
-      return $this->readingMins;
-  }
-
-  /**
-   * @param int $readingMins
-   *
-   * @return static
-   */
-  public function setReadingMins($readingMins){
-      $this->readingMins = $readingMins;
-      return $this;
-  }
-
-  /**
-   * @return string[]
-   */
-  public function getErrors() {
-    return $this->errors;
-  }
-
-  /**
-   * @param string[] $errors
-   *
-   * @return static
-   */
-  public function setErrors(array $errors) {
-    $this->errors = $errors;
-    return $this;
-  }
-
-  public function addError($error) {
-    $this->errors[] = $error;
-  }
-  /**
-   * Takes in raw json string and returns an instance of this object
-   * @param string|array $json
-   * @return Page
-   */
-  public static function deserialize($json) {
-      $className = get_called_class();
-      $classInstance = new $className();
-      if (is_string($json))
-          $json = json_decode($json);
-
-      foreach ($json as $key => $value) {
-          if (!property_exists($classInstance, $key)) continue;
-
-          $classInstance->$key = $value;
-      }
-
-      return $classInstance;
-  }
-
-  function jsonSerialize() {
-      return get_object_vars($this);
-  }
-}
-
 class Pagescraper {
-/**
- * @var Page $page
- */
+
+  /**
+   * @var string CACHE_PATH
+   */
+  const CACHE_PATH = './cache';
+
+  /**
+   * time that a page is cached in seconds before retrieving a fresh one
+   * @var int CACHE_TIME
+   */
+  const CACHE_TIME = 1800;
+
+  /**
+   * @var Page $page
+   */
   private $page;
   /**
    * @var int $debug
    */
   private $debug;
-
-
 
   /**
    * Constructor
@@ -644,14 +492,14 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    */
   public function getArticle($url) {
     $encoded_url = base64_encode($url);
-    $cached_path = CACHE_PATH.'/'.$encoded_url.'.json';
+    $cached_path = Pagescraper::CACHE_PATH.'/'.$encoded_url.'.json';
 
     // check file exists
     if (is_file( $cached_path ) ) {
       // see how old the file is
       $time_lapse = (strtotime("now") - filemtime($cached_path));
       // if it was not too old
-      if ($time_lapse < CACHE_TIME) {
+      if ($time_lapse < Pagescraper::CACHE_TIME) {
         // return the cache files contents
         $cached_article =  Page::deserialize( file_get_contents($cached_path) );
         return $cached_article;
