@@ -1,5 +1,7 @@
 <?php
-require 'lib.php';
+require 'lib/Page.php';
+require 'lib/Pagescraper.php';
+
 
 use PHPUnit\Framework\TestCase;
 
