@@ -39,7 +39,7 @@ class Pagescraper {
    *
    * @return static
    */
-  public function setDebug(bool $debug)
+  public function setDebug($debug)
   {
     $this->debug = $debug;
     return $this;
