@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Page
+ */
 class Page implements JsonSerializable {
   /**
   * @var string $location
@@ -130,9 +133,13 @@ class Page implements JsonSerializable {
     return $this;
   }
 
+  /**
+   * @param string $error
+   */
   public function addError($error) {
     $this->errors[] = $error;
   }
+
   /**
    * Takes in raw json string and returns an instance of this object
    * @param string|array $json
@@ -153,6 +160,10 @@ class Page implements JsonSerializable {
       return $classInstance;
   }
 
+  /**
+   * returns array of Page object properties
+   * @return array
+   */
   function jsonSerialize() {
       return get_object_vars($this);
   }
