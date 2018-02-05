@@ -15,6 +15,7 @@ $pageScraper = new Pagescraper;
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <script src="js/articleSpeechSynthesis.js" charset="utf-8"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
@@ -23,6 +24,29 @@ $pageScraper = new Pagescraper;
 </head>
 
 <body>
+
+    <dialog id="favDialog" open>
+        <form action="javascript:void(0);">
+            <input type="text" class="txt">
+            <div>
+                <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+                <div class="rate-value">1</div>
+                <div class="clearfix"></div>
+            </div>
+            <div>
+                <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+                <div class="pitch-value">1</div>
+                <div class="clearfix"></div>
+            </div>
+            <select>
+
+            </select>
+            <div class="controls">
+                <button id="play" type="submit">Play</button>
+            </div>
+        </form>
+    </dialog>
+
 
 <div id="document">
 <?php
