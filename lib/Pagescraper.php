@@ -558,7 +558,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    * @param mixed $url
    * @param bool  $is_academic
    */
-  private function getJson($url,$is_academic=false) {
+  public function getJson($url,$is_academic=false) {
     return json_encode($this->getArticle($url,$is_academic));
   }
 }
