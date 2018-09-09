@@ -167,7 +167,7 @@ class Page implements JsonSerializable {
   function jsonSerialize() {
       $result = get_object_vars($this);
       // since content is html we need to encode with bas64 so we don't need to worry about complex escaping
-      $result['content'] = base64_encode($page->content);
+      $result['content'] = base64_encode($this->content);
       return $result;
   }
 }
