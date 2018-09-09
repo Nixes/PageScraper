@@ -560,15 +560,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    */
   public function getJson($url,$is_academic=false) {
     $page = $this->getArticle($url,$is_academic);
-    $result = array(
-        'title' => $page->title,
-        'author' => $page->author,
-        'errors' => $page->errors,
-        'location' => $page->location,
-        'readingMins' => $page->readingMins,
-        'content' => base64_encode($page->content),
-    );
-    return json_encode($result);
+    return json_encode($page->jsonSerialize());
   }
 }
 
