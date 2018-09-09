@@ -141,6 +141,17 @@ class Page implements JsonSerializable {
   }
 
   /**
+   * returns array of Page object properties ready for json encoding
+   * @return array
+   */
+  public function jsonSerialize() {
+      $result = get_object_vars($this);
+      // since content is html we need to encode with bas64 so we don't need to worry about complex escaping
+      $result['content'] = base64_encode($this->content);
+      return $result;
+  }
+
+  /**
    * Takes in raw json string and returns an instance of this object
    * @param string|array $json
    * @return Page
@@ -158,17 +169,6 @@ class Page implements JsonSerializable {
       }
 
       return $classInstance;
-  }
-
-  /**
-   * returns array of Page object properties ready for json encoding
-   * @return array
-   */
-  function jsonSerialize() {
-      $result = get_object_vars($this);
-      // since content is html we need to encode with bas64 so we don't need to worry about complex escaping
-      $result['content'] = base64_encode($this->content);
-      return $result;
   }
 }
 
