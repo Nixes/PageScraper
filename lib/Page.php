@@ -165,7 +165,9 @@ class Page implements JsonSerializable {
 
       foreach ($json as $key => $value) {
           if (!property_exists($classInstance, $key)) continue;
-
+          if ($key === 'content') {
+              $value = base64_decode($value);
+          }
           $classInstance->$key = $value;
       }
 
