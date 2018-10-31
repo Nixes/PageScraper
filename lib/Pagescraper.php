@@ -94,19 +94,18 @@ class Pagescraper {
 
   /**
    * a function that converts a relative style url to an absolute one, works on resources and urls
-   * @param string $url
-   * @param string $location
+   * @param string $path relative or absolute chunk of url from page
+   * @param string $location full url of page that path was found on
    */
-  private function convertRelToAbs($url, $location) {
-    $path = $url;
+  private function convertRelToAbs($path, $location) {
     if (!empty($path)) {
-      if ((substr($url, 0, 7) == 'http://') || (substr($url, 0, 8) == 'https://')) {
+      if ((substr($path, 0, 7) == 'http://') || (substr($path, 0, 8) == 'https://')) {
         // url is absolute
         return $url;
       } else {
         // url is relative
-        $parsed_url = parse_url( $location );
-        $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+        $url_parts = parse_url( $path );
+		$result = http_build_url($location, $url_parts, HTTP_URL_JOIN_PATH);
         return $result;
       }
     }
