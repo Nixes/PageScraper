@@ -1,50 +1,54 @@
 <?php
 
-function containsJunk($childNode) {
-  $return = false;
+namespace Nixes\Pagescraper;
 
-  $junk_attribues = array(
-    // these two remove most comment sections
-    array('regex' => "/comment/i", 'attribute' => "id"),
-    array('regex' => "/comment/i", 'attribute' => "class"),
+class Blacklist {
+  public static function containsJunk($childNode) {
+    $return = false;
 
-     // this is an ieee spectrum specific regex
-    array('regex' => "/iso-content/i", 'attribute' => "id"),
+    $junk_attribues = array(
+      // these two remove most comment sections
+        array('regex' => "/comment/i", 'attribute' => "id"),
+        array('regex' => "/comment/i", 'attribute' => "class"),
 
-    // phys org related / recommended stories remover
-    array('regex' => "/news-holder/i", 'attribute' => "id")
-  );
+      // this is an ieee spectrum specific regex
+        array('regex' => "/iso-content/i", 'attribute' => "id"),
+
+      // phys org related / recommended stories remover
+        array('regex' => "/news-holder/i", 'attribute' => "id")
+    );
 
 
-  foreach($junk_attribues as $junk_attribute) {
-    if ( preg_match($junk_attribute["regex"],$childNode->getAttribute($junk_attribute["attribute"])) ) {
-      if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
-        echo "<p>Regex: ".$junk_attribute["regex"]." For Attribute: ".$junk_attribute["attribute"]."  Detected and Removed Element</p>";
+    foreach($junk_attribues as $junk_attribute) {
+      if ( preg_match($junk_attribute["regex"],$childNode->getAttribute($junk_attribute["attribute"])) ) {
+        if (isset($GLOBALS["debug"]) && $GLOBALS["debug"]==1) {
+          echo "<p>Regex: ".$junk_attribute["regex"]." For Attribute: ".$junk_attribute["attribute"]."  Detected and Removed Element</p>";
+        }
+        $return = true;
       }
-      $return = true;
     }
+    return $return;
   }
-  return $return;
-}
 
-function containsBadTag ($childNode) {
-  $return = false;
+  public static function containsBadTag ($childNode) {
+    $return = false;
 
-  $bad_tags = array(
-    // asides very often contain js metadata
-    'aside',
-    'script',
+    $bad_tags = array(
+      // asides very often contain js metadata
+        'aside',
+        'script',
 
-    // we don't really support lists, and they are often a very large source of irrelevant <p> tags
-    'ul',
-    'ol'
-  );
+      // we don't really support lists, and they are often a very large source of irrelevant <p> tags
+        'ul',
+        'ol'
+    );
 
-  foreach($bad_tags as $bad_tag) {
-    if ( $childNode->tagName == $bad_tag ) {
-      $return = true;
+    foreach($bad_tags as $bad_tag) {
+      if ( $childNode->tagName == $bad_tag ) {
+        $return = true;
+      }
     }
+    return $return;
   }
-  return $return;
 }
 ?>
