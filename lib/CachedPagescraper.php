@@ -27,7 +27,11 @@ class CachedPagescraper
         $this->pagescraper = $pagescraper;
     }
 
-    public function getPage(string $url) {
+    /**
+     * @param string $url
+     * @return Page
+     */
+    public function getPage(string $url): Page {
         $encoded_url = base64_encode($url);
         $cached_path = self::CACHE_PATH.'/'.$encoded_url.'.json';
 

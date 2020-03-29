@@ -553,7 +553,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
    * @param string $url
    * @return Page
    */
-  public function getArticle(string $url) {
+  public function getArticle(string $url): Page {
     // if there was no file or the cache was old, then go get the article
     return $this->getNewArticle($url);
   }
