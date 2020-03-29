@@ -5,8 +5,10 @@
     "keywords": ["article","news","scraper"],
     "homepage": "https://github.com/nixes/pagescraper",
     "license": "GPLv2",
-    "psr-4": { "Nixes\\Pagescraper\\": "lib/" },
     "require-dev": {
         "phpunit/phpunit": "6.2"
+    },
+    "autoload": {
+        "psr-4": { "Nixes\\Pagescraper\\": "lib/" }
     }
 }
