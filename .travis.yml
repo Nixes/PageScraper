@@ -5,13 +5,13 @@ php:
   # aliased to 5.3.29
   # - 5.3 disabled because it is currently broken in travis
   # aliased to a recent 5.4.x version
-  - 5.4
+  # - 5.4
   # aliased to a recent 5.5.x version
   # - 5.5 has no compatible PHPUnit version
   # aliased to a recent 5.6.x version
-  - 5.6
+  # - 5.6
   # aliased to a recent 7.x version
-  - 7.0
+  - 7.1
 
 matrix:
   #allow_failures:
