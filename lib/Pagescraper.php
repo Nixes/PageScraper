@@ -1,6 +1,6 @@
 <?php
-require 'blacklist.php';
 
+namespace Nixes\Pagescraper;
 /**
  * Pagescraper
  */
@@ -79,11 +79,11 @@ class Pagescraper {
       $childNodes = $DOMNode->childNodes;
       for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
         $childNode = $childNodes->item($i);
-        if ($childNode->hasAttributes() && containsJunk($childNode) ) {
+        if ($childNode->hasAttributes() && Blacklist::containsJunk($childNode) ) {
           $DOMNode->removeChild($childNode);
           break;
         }
-        if ( isset($childNode->tagName) && containsBadTag($childNode) ) {
+        if ( isset($childNode->tagName) && Blacklist::containsBadTag($childNode) ) {
           $DOMNode->removeChild($childNode);
           break;
         }
