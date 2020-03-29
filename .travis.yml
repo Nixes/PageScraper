@@ -21,4 +21,4 @@ matrix:
 before_script:
     - mkdir cache
 
-script: composer run test
+script: phpunit --configuration phpunit.xml --coverage-text
