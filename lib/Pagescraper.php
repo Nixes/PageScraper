@@ -1,5 +1,7 @@
 <?php
 require 'blacklist.php';
+require __DIR__ . '/../vendor/autoload.php';
+use Purl\Url;
 
 /**
  * Pagescraper
@@ -101,11 +103,12 @@ class Pagescraper {
     if (!empty($path)) {
       if ((substr($path, 0, 7) == 'http://') || (substr($path, 0, 8) == 'https://')) {
         // url is absolute
-        return $url;
+        return $path;
       } else {
         // url is relative
-        $url_parts = parse_url( $path );
-		$result = http_build_url($location, $url_parts, HTTP_URL_JOIN_PATH);
+		$url = new Url($path);
+		$url->add($location);
+		$result = $url->getUrl();
         return $result;
       }
     }
