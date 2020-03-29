@@ -1,5 +1,9 @@
 <?php
-require 'blacklist.php';
+
+namespace Nixes\Pagescraper;
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
 
 /**
  * Pagescraper
@@ -79,11 +83,11 @@ class Pagescraper {
       $childNodes = $DOMNode->childNodes;
       for ($i=0; $i < $childNodes->length; $i++ ) { // todo: optimise by copying to a list and running through that as the original list of child nodes stays the same despite elements being deleted, this results in offsets or elements being checked for being empty
         $childNode = $childNodes->item($i);
-        if ($childNode->hasAttributes() && containsJunk($childNode) ) {
+        if ($childNode->hasAttributes() && Blacklist::containsJunk($childNode) ) {
           $DOMNode->removeChild($childNode);
           break;
         }
-        if ( isset($childNode->tagName) && containsBadTag($childNode) ) {
+        if ( isset($childNode->tagName) && Blacklist::containsBadTag($childNode) ) {
           $DOMNode->removeChild($childNode);
           break;
         }
@@ -392,6 +396,35 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   }
 
   /**
+   * file_get_contents but includes real browser like user agent
+   * @param string $url
+   * @return Response
+   */
+  private static function fileGetContentsHeaders(string $url): Response {
+    // Create a stream
+    $opts = array(
+        'http'=>array(
+            'method'=>"GET",
+            'header'=>"Accept-language: en\r\n" .
+                "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36\r\n"
+        )
+    );
+
+    $context = stream_context_create($opts);
+
+    $body = file_get_contents($url,false, $context);
+    if ($body === false) {
+      $body = null;
+    }
+    $header = [];
+    // file_get_contents populates $http_response_header on response, this is one of the parts of php that really sucks
+    if (!empty($http_response_header)) {
+      $header = $http_response_header;
+    }
+    return new Response($body,$header);
+  }
+
+  /**
    * download page from $url and load into $doc
    * @param DOMDocument $doc
    * @param string $url
@@ -404,13 +437,14 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       return;
     }
 
-    $actualpage = file_get_contents($url);
+    $response = self::fileGetContentsHeaders($url);
+    $actualpage = $response->body;
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
       $this->page->addError("failed to download page");
     }
 
     // determine current page url
-    $location = $this->parseHeaderLocation($http_response_header);
+    $location = $this->parseHeaderLocation($response->header);
     if ($location) {
       $this->location =  $location;
     } else {
@@ -422,11 +456,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 /**
  * determine how long it will take to read the article in minutes
  * @param string $content
- * @return float
+ * @return float|null
  */
-  private function calculateReadingTime($content) {
+  private function calculateReadingTime($content): ?float {
     $reader_words_per_min = 300;
     $num_words = str_word_count( strip_tags( strtolower($content) ), 0);
+    $reading_time = null;
     if ($num_words > 0) {
       $reading_time = $num_words / $reader_words_per_min;
     }

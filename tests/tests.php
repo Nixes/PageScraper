@@ -1,10 +1,7 @@
 <?php
-require 'lib/Page.php';
-require 'lib/Pagescraper.php';
 
-
+use Nixes\Pagescraper\Pagescraper;
 use PHPUnit\Framework\TestCase;
-
 
 /**
  * function that uses reflection to get allow executing private methods within an object for testing
