@@ -1,4 +1,11 @@
 {
+    "name": "nixes/pagescraper",
+    "type": "library",
+    "description": "A php library that attempts to grab the main contents of a news article. ",
+    "keywords": ["article","news","scraper"],
+    "homepage": "https://github.com/nixes/pagescraper",
+    "license": "GPLv2",
+    "psr-4": { "Nixes\\Pagescraper\\": "lib/" },
     "require-dev": {
         "phpunit/phpunit": "6.2"
     }
