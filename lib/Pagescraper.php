@@ -398,9 +398,9 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   /**
    * file_get_contents but includes real browser like user agent
    * @param string $url
-   * @return false|string
+   * @return Response
    */
-  private function fileGetContentsHeaders(string $url) {
+  private static function fileGetContentsHeaders(string $url): Response {
     // Create a stream
     $opts = array(
         'http'=>array(
@@ -412,7 +412,11 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 
     $context = stream_context_create($opts);
 
-    return file_get_contents($url,false, $context);
+    $body = file_get_contents($url,false, $context);
+    if ($body === false) {
+      $body = null;
+    }
+    return new Response($body,$http_response_header);
   }
 
   /**
@@ -428,13 +432,14 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       return;
     }
 
-    $actualpage = $this->fileGetContentsHeaders($url);
+    $response = self::fileGetContentsHeaders($url);
+    $actualpage = $response->body;
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
       $this->page->addError("failed to download page");
     }
 
     // determine current page url
-    $location = $this->parseHeaderLocation($http_response_header);
+    $location = $this->parseHeaderLocation($response->header);
     if ($location) {
       $this->location =  $location;
     } else {
