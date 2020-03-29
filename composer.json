@@ -10,5 +10,11 @@
     },
     "autoload": {
         "psr-4": { "Nixes\\Pagescraper\\": "lib/" }
+    },
+    "scripts": {
+        "test": "phpunit --configuration phpunit.xml --coverage-text"
+    },
+    "require": {
+        "ext-dom": "*"
     }
 }
