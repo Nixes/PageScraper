@@ -21,4 +21,6 @@ matrix:
 before_script:
     - mkdir cache
 
+install: composer install
+
 script: vendor/bin/phpunit --configuration phpunit.xml --coverage-text
