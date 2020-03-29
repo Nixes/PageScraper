@@ -1,6 +1,8 @@
 <?php
 
 namespace Nixes\Pagescraper;
+use JsonSerializable;
+
 /**
  * Page
  */
@@ -23,7 +25,7 @@ class Page implements JsonSerializable {
   private $title;
 
   /**
-   * @var int $readingMins
+   * @var int|null $readingMins
    */
   private $readingMins;
 
@@ -112,7 +114,7 @@ class Page implements JsonSerializable {
    *
    * @return static
    */
-  public function setReadingMins($readingMins){
+  public function setReadingMins(?int $readingMins){
       $this->readingMins = $readingMins;
       return $this;
   }

@@ -1,6 +1,10 @@
 <?php
 
 namespace Nixes\Pagescraper;
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
+
 /**
  * Pagescraper
  */
@@ -392,6 +396,26 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
   }
 
   /**
+   * file_get_contents but includes real browser like user agent
+   * @param string $url
+   * @return false|string
+   */
+  private function fileGetContentsHeaders(string $url) {
+    // Create a stream
+    $opts = array(
+        'http'=>array(
+            'method'=>"GET",
+            'header'=>"Accept-language: en\r\n" .
+                "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36\r\n"
+        )
+    );
+
+    $context = stream_context_create($opts);
+
+    return file_get_contents($url,false, $context);
+  }
+
+  /**
    * download page from $url and load into $doc
    * @param DOMDocument $doc
    * @param string $url
@@ -404,7 +428,7 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
       return;
     }
 
-    $actualpage = file_get_contents($url);
+    $actualpage = $this->fileGetContentsHeaders($url);
     if (! @$doc->loadHTML(mb_convert_encoding($actualpage,'HTML-ENTITIES',"auto")) ) {
       $this->page->addError("failed to download page");
     }
@@ -422,11 +446,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
 /**
  * determine how long it will take to read the article in minutes
  * @param string $content
- * @return float
+ * @return float|null
  */
-  private function calculateReadingTime($content) {
+  private function calculateReadingTime($content): ?float {
     $reader_words_per_min = 300;
     $num_words = str_word_count( strip_tags( strtolower($content) ), 0);
+    $reading_time = null;
     if ($num_words > 0) {
       $reading_time = $num_words / $reader_words_per_min;
     }
