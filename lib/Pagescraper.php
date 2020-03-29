@@ -416,7 +416,12 @@ private function countParagraphs(DOMNode $rootDOM,DOMXPath $rootXpath) {
     if ($body === false) {
       $body = null;
     }
-    return new Response($body,$http_response_header);
+    $header = [];
+    // file_get_contents populates $http_response_header on response, this is one of the parts of php that really sucks
+    if (!empty($http_response_header)) {
+      $header = $http_response_header;
+    }
+    return new Response($body,$header);
   }
 
   /**
