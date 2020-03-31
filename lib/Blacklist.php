@@ -3,7 +3,7 @@
 namespace Nixes\Pagescraper;
 
 class Blacklist {
-  public static function containsJunk($childNode) {
+  public static function containsJunk($childNode): bool {
     $return = false;
 
     $junk_attribues = array(
@@ -25,12 +25,13 @@ class Blacklist {
           echo "<p>Regex: ".$junk_attribute["regex"]." For Attribute: ".$junk_attribute["attribute"]."  Detected and Removed Element</p>";
         }
         $return = true;
+        break;
       }
     }
     return $return;
   }
 
-  public static function containsBadTag ($childNode) {
+  public static function containsBadTag ($childNode): bool {
     $return = false;
 
     $bad_tags = array(
@@ -46,6 +47,7 @@ class Blacklist {
     foreach($bad_tags as $bad_tag) {
       if ( $childNode->tagName == $bad_tag ) {
         $return = true;
+        break;
       }
     }
     return $return;
