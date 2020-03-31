@@ -2,8 +2,10 @@
 
 namespace Nixes\Pagescraper;
 
+use DOMNode;
+
 class Blacklist {
-  public static function containsJunk($childNode): bool {
+  public static function containsJunk(DOMNode $childNode): bool {
     $return = false;
 
     $junk_attribues = array(
@@ -31,7 +33,7 @@ class Blacklist {
     return $return;
   }
 
-  public static function containsBadTag ($childNode): bool {
+  public static function containsBadTag (DOMNode $childNode): bool {
     $return = false;
 
     $bad_tags = array(
