@@ -53,7 +53,8 @@ class Pagescraper {
     private function findHighestIndex(array $arr) {
         $highestNo = 0;
         $indexHighestNo = 0;
-        for ( $i=0; $i < count($arr); $i++ ) {
+        $arrCount = count($arr);
+        for ( $i=0; $i < $arrCount; $i++ ) {
             if ($arr[$i] > $highestNo) {
                 $highestNo=$arr[$i];
                 $indexHighestNo=$i;
@@ -271,119 +272,6 @@ class Pagescraper {
     }
 
     /**
-     * convert raw http headers to associative array
-     * @param string[]  $headers
-     * @return array
-     */
-    private function parseHeaders( $headers ) {
-        $head = array();
-        foreach( $headers as $k=>$v ) {
-            $t = explode( ':', $v, 2 );
-            if( isset( $t[1] ) )
-                $head[ trim($t[0]) ] = trim( $t[1] );
-            else {
-                $head[] = $v;
-                if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
-                    $head['reponse_code'] = intval($out[1]);
-            }
-        }
-        return $head;
-    }
-
-    /**
-     * function shamelessly taken from stackoverflow: https://stackoverflow.com/questions/22469662/fatal-error-call-to-undefined-function-post
-     * used due to the lack of curl on this server which I am in no position to fix
-     * @param mixed $url
-     * @param mixed $data
-     * @param mixed $cookie
-     * @param null  $headers
-     */
-    private function httpPostFlds($url, $data, $cookie,$headers=null) {
-        $data = http_build_query($data);
-        $opts = array('http' => array(
-            'method' => 'POST',
-            'max_redirects' => '10',
-            'cookie' => $cookie,
-            'content' => $data
-        ));
-
-        if($headers) {
-            $opts['http']['header'] = $headers;
-        }
-        $st = stream_context_create($opts);
-        $fp = fopen($url, 'rb', false, $st);
-
-        if(!$fp) {
-            return false;
-        }
-        var_dump( $this->parseHeaders($http_response_header) );
-        return stream_get_contents($fp);
-    }
-
-    /**
-     * @param mixed $url
-     * @param mixed $cookie
-     */
-    private function httpGet($url,$cookie) {
-        $opts = array('http' => array(
-            'method' => 'GET',
-            'max_redirects' => '10',
-            'header' => "Accept-language: en\r\n"."Cookie: ".$cookie."\r\n"
-        ));
-        $st = stream_context_create($opts);
-        $fp = fopen($url, 'rb', false, $st);
-
-        if(!$fp) {
-            return false;
-        }
-        var_dump( $this->parseHeaders($http_response_header) );
-        return stream_get_contents($fp);
-    }
-
-    /**
-     * @param string $targetUrl
-     * @param mixed $data
-     * @return array|null
-     */
-    private function getCookie($targetUrl, $data) {
-        $data = http_build_query($data);
-        $opts = array('http' => array(
-            'method' => 'POST',
-            'max_redirects' => '10',
-            'content' => $data
-        ));
-
-        if($headers) {
-            $opts['http']['header'] = $headers;
-        }
-        $st = stream_context_create($opts);
-        $fp = fopen($targetUrl, 'rb', false, $st);
-        if(!$fp) {
-            return false;
-        }
-        $headers = $this->parseHeaders($http_response_header);
-        if (isset($headers["Set-Cookie"])) {
-            return array(
-                $cookie => $headers["Set-Cookie"],
-                $redirect => $headers["Location"]
-            );
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param mixed $targetUrl
-     */
-    private function getAcademicPage($targetUrl) {
-        // TODO: ask for user credentials before supplying access to academic content (to prevent abuse)
-        // magic code removed for licensing / legal reasons
-        $response = $this->httpGet($targetUrl); // should now follow redirects
-        //echo "<p>Response was: ".$response."</p>";
-        return $response;
-    }
-
-    /**
      * file_get_contents but includes real browser like user agent
      * @param string $url
      * @return Response
@@ -417,7 +305,7 @@ class Pagescraper {
      * @param DOMDocument $doc
      * @param string $url
      */
-    function downloadArticle(DOMDocument $doc,$url) {
+    private function downloadArticle(DOMDocument $doc,$url) {
         // validate url is actually a url
         if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
             // failed validation
@@ -521,41 +409,25 @@ class Pagescraper {
         return null;
     }
 
+
     /**
      * @param string $url
-     * @param bool  $is_academic
      * @return Page
      */
-    function getNewArticle($url,$is_academic=false) {
-
+    public function getArticle(string $url): Page {
         $doc = new DOMDocument;
         $doc->preserveWhiteSpace = false;
 
-        if ( $is_academic == true ) {
-            @$doc->loadHTML( $this->getAcademicPage($url) ); // we don't want to see every parse fail
-        } else {
-            $this->downloadArticle($doc,$url);
-        }
-        // if there is an amp version of the article use that instead (allows bypassing mulitple page limits)
+        $this->downloadArticle($doc,$url);
+        // if there is an amp version of the article use that instead (allows bypassing multiple page limits)
         $ampLink = $this->checkAmpVersion($doc);
         if ($ampLink !== null) {
-            return $this->getNewArticle($ampLink ,$is_academic);
+            return $this->getArticle($ampLink);
         }
 
         $this->parseArticle($doc);
 
         return $this->page;
-    }
-
-
-    /**
-     * function to check for cached version of aricle
-     * @param string $url
-     * @return Page
-     */
-    public function getArticle(string $url): Page {
-        // if there was no file or the cache was old, then go get the article
-        return $this->getNewArticle($url);
     }
 
     /**
