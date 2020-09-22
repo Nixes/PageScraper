@@ -1,0 +1,7 @@
+# top-most EditorConfig file
+root = true
+
+# apply to all file types
+[*.php]
+indent_style = space
+indent_size = 4
