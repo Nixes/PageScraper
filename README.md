@@ -10,19 +10,6 @@ Basic usage:
 pagescrape.php?targetUrl=http://www.somenewssitehere.com/somearticle
 ```
 
-## Algorithm
-The basic assumption behind the algorithm is that the article/content heavy portion of any site is likely to also be the largest cluster of paragraph tags in the document.
-
-The algorithm can be sumarised as follows:
-<ul>
-<li>Count total number of paragraphs contained within a page.</li>
-<li>Iterate through each of the DOM elements of the current level and count total paragraphs within.</li>
-<li>If any DOM element contains greater than 50% of the paragraphs compared to the total, follow it.</li>
-<li>Continue in same fashion until all node counts contain less then 50% paragraphs.</li>
-<li>Extract paragraphs and images from this node and present to suit.</li>
-</ul>
-
-
 ## Common Issues and Fixes
 
 ### NGINX Error: "upstream sent too big header while reading response header from upstream"
