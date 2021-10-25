@@ -372,11 +372,11 @@ class Pagescraper {
 
     /**
      * Returns an DOMNode that has the tag specified from children directly under, not recursive
-     * @param string   $tagName
+     * @param string $tagName
      * @param DOMNode $DOMNode
      * @return DOMNode|null
      */
-    private function getElementByTagNameInChildNodes($tagName,DOMNode $DOMNode) {
+    private static function getElementByTagNameInChildNodes($tagName, DOMNode $DOMNode) {
         foreach($DOMNode->childNodes as $childNode) {
             if (isset($childNode->tagName) && $childNode->tagName === $tagName) {
                 return $childNode;
@@ -399,9 +399,9 @@ class Pagescraper {
 
         $tags = [];
         // search for html header (where amp links are found)
-        $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+        $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
         if ($html === null) return $tags;
-        $head = $this->getElementByTagNameInChildNodes('head',$html);
+        $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
         if ($head === null) return $tags;
         // next search for amp link
         foreach ($head->childNodes as $metadata) {
@@ -431,9 +431,9 @@ class Pagescraper {
         $rootNode->encoding = 'utf-8';
 
         // search for html header (where amp links are found)
-        $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+        $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
         if ($html === null) return;
-        $head = $this->getElementByTagNameInChildNodes('head',$html);
+        $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
         if ($head === null) return;
         // next search for amp link
         foreach ($head->childNodes as $metadata) {
