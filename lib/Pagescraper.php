@@ -385,6 +385,16 @@ class Pagescraper {
     }
 
     private function getTags(DOMDocument $rootNode): ?array {
+        // example: <meta property="article:tag" content="flight attendant,Alitalia">
+        $tags = $this->getTagsFromMeta($rootNode, 'article:tag');
+        if ($tags !== null) return $tags;
+
+        // example: <meta name="keywords" content="flight attendant,Alitalia">
+        $tags = $this->getTagsFromMeta($rootNode, 'keywords');
+        if ($tags !== null) return $tags;
+    }
+
+    private function getTagsFromMeta(DOMDocument $rootNode, string $attribute): ?array {
         $rootNode->encoding = 'utf-8';
 
         $tags = [];
@@ -396,7 +406,7 @@ class Pagescraper {
         // next search for amp link
         foreach ($head->childNodes as $metadata) {
             if (isset($metadata->tagName) && $metadata->tagName === 'meta' ) {
-                if ($metadata->getAttribute('name') === 'article:tag') {
+                if ($metadata->getAttribute('name') === $attribute) {
                     $rawTags = $metadata->getAttribute('content');
                     if ($this->getDebug()) {
                         echo "Found article:tags: ".$rawTags."\n";
