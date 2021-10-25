@@ -17,6 +17,28 @@ function callMethod($obj, $method_name, array $args) {
 }
 
 class TestPageScraper extends TestCase {
+    /**
+     * Asserts that two associative arrays are similar.
+     *
+     * Both arrays must have the same indexes with identical values
+     * without respect to key ordering
+     *
+     * @param array $expected
+     * @param array $array
+     */
+    protected function assertArraySimilar(array $expected, array $array)
+    {
+        $this->assertTrue(count(array_diff_key($array, $expected)) === 0);
+
+        foreach ($expected as $key => $value) {
+            if (is_array($value)) {
+                $this->assertArraySimilar($value, $array[$key]);
+            } else {
+                $this->assertContains($value, $array);
+            }
+        }
+    }
+
 
     public function test_findHighestIndex () {
         $test_array = array(0,2,5,7,9,10,50);
@@ -64,6 +86,41 @@ class TestPageScraper extends TestCase {
                 echo "\n";
             }
         }
+    }
+
+    public function test_tagDetermination () {
+        $url = "https://www.reuters.com/world/middle-east/israel-advances-plans-new-west-bank-settlement-homes-2021-10-24/";
+        $pageScraper = new Pagescraper;
+        echo "Testing against page: ".$url;
+        $article = $pageScraper->getArticle($url);
+        if ( $article->getErrors() !== null && count($article->getErrors()) > 0 ) {
+            echo "Errors: ";
+            foreach ($article->getErrors() as $error) {
+                echo "  $error\n";
+            }
+            echo "\n";
+        }
+
+        $this->assertGreaterThan(0,count($article->getTags()));
+
+        $expectedTags = [
+            "CWP",
+            "DIP",
+            "GEN",
+            "POL",
+            "IL",
+            "AMERS",
+            "SWASIA",
+            "US",
+            "MEAST",
+            "NAMER",
+            "ASXPAC",
+            "PS",
+            "EMRG",
+            "ASIA"
+        ];
+
+        $this->assertArraySimilar($expectedTags,$article->getTags());
     }
 }
 ?>
