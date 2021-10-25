@@ -35,6 +35,11 @@ class Page implements JsonSerializable {
     private $errors;
 
     /**
+     * @var string[]
+     */
+    public $tags = [];
+
+    /**
      * @return string
      */
     public function getLocation() {
@@ -175,6 +180,20 @@ class Page implements JsonSerializable {
         }
 
         return $classInstance;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTags(): array {
+        return $this->tags;
+    }
+
+    /**
+     * @param string[] $tags
+     */
+    public function setTags(array $tags): void {
+        $this->tags = $tags;
     }
 }
 
