@@ -415,7 +415,7 @@ class Pagescraper {
                 if ($metadata->getAttribute('name') === $attribute) {
                     $rawTags = $metadata->getAttribute('content');
                     if ($this->getDebug()) {
-                        echo "Found article:tags: ".$rawTags."\n";
+                        echo "Found ".$attribute.": ".$rawTags."\n";
                     }
                     if (!empty($rawTags)) {
                         return explode(',',$rawTags);
