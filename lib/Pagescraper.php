@@ -99,7 +99,11 @@ class Pagescraper {
             } else {
                 // url is relative
                 $parsed_url = parse_url( $location );
-                $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+                if (isset($parsed_url['scheme'])) {
+                    $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+                } else {
+                    $result = $url;
+                }
                 return $result;
             }
         }
@@ -352,6 +356,11 @@ class Pagescraper {
         $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
         $xpath = new DOMXPath($doc);
 
+        $tags = $this->getTags($doc);
+        if ($tags !== null) {
+            $this->page->setTags($tags);
+        }
+
         $this->removeJunk($doc);
         if ($doc->hasChildNodes()) {
             $this->checkNode($doc,$xpath,0);
@@ -367,16 +376,56 @@ class Pagescraper {
 
     /**
      * Returns an DOMNode that has the tag specified from children directly under, not recursive
-     * @param string   $tagName
+     * @param string $tagName
      * @param DOMNode $DOMNode
      * @return DOMNode|null
      */
-    private function getElementByTagNameInChildNodes($tagName,DOMNode $DOMNode) {
+    private static function getElementByTagNameInChildNodes($tagName, DOMNode $DOMNode) {
         foreach($DOMNode->childNodes as $childNode) {
             if (isset($childNode->tagName) && $childNode->tagName === $tagName) {
                 return $childNode;
             }
         }
+    }
+
+    private function getTags(DOMDocument $rootNode): ?array {
+        // example: <meta property="article:tag" content="flight attendant,Alitalia">
+        $tags = $this->getTagsFromMeta($rootNode, 'article:tag');
+        if ($tags !== null) return $tags;
+
+        // example: <meta name="keywords" content="flight attendant,Alitalia">
+        $tags = $this->getTagsFromMeta($rootNode, 'keywords');
+        if ($tags !== null) return $tags;
+
+        return null;
+    }
+
+    private function getTagsFromMeta(DOMDocument $rootNode, string $attribute): ?array {
+        $rootNode->encoding = 'utf-8';
+
+        $tags = [];
+        // search for html header (where amp links are found)
+        $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
+        if ($html === null) return $tags;
+        $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
+        if ($head === null) return $tags;
+        // next search for amp link
+        foreach ($head->childNodes as $metadata) {
+            if (isset($metadata->tagName) && $metadata->tagName === 'meta' ) {
+                if ($metadata->getAttribute('name') === $attribute) {
+                    $rawTags = $metadata->getAttribute('content');
+                    if ($this->getDebug()) {
+                        echo "Found ".$attribute.": ".$rawTags."\n";
+                    }
+                    if (!empty($rawTags)) {
+                        return explode(',',$rawTags);
+                    }
+                }
+            }
+        }
+
+
+        return null;
     }
 
     /**
@@ -388,9 +437,9 @@ class Pagescraper {
         $rootNode->encoding = 'utf-8';
 
         // search for html header (where amp links are found)
-        $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+        $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
         if ($html === null) return;
-        $head = $this->getElementByTagNameInChildNodes('head',$html);
+        $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
         if ($head === null) return;
         // next search for amp link
         foreach ($head->childNodes as $metadata) {
