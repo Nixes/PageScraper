@@ -352,6 +352,11 @@ class Pagescraper {
         $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
         $xpath = new DOMXPath($doc);
 
+        $tags = $this->getTags($doc);
+        if ($tags !== null) {
+            $this->page->setTags($tags);
+        }
+
         $this->removeJunk($doc);
         if ($doc->hasChildNodes()) {
             $this->checkNode($doc,$xpath,0);
@@ -377,6 +382,34 @@ class Pagescraper {
                 return $childNode;
             }
         }
+    }
+
+    private function getTags(DOMDocument $rootNode): ?array {
+        $rootNode->encoding = 'utf-8';
+
+        $tags = [];
+        // search for html header (where amp links are found)
+        $html = $this->getElementByTagNameInChildNodes('html',$rootNode);
+        if ($html === null) return $tags;
+        $head = $this->getElementByTagNameInChildNodes('head',$html);
+        if ($head === null) return $tags;
+        // next search for amp link
+        foreach ($head->childNodes as $metadata) {
+            if (isset($metadata->tagName) && $metadata->tagName === 'meta' ) {
+                if ($metadata->getAttribute('name') === 'article:tag') {
+                    $rawTags = $metadata->getAttribute('content');
+                    if ($this->getDebug()) {
+                        echo "Found article:tags: ".$rawTags."\n";
+                    }
+                    if (!empty($rawTags)) {
+                        return explode(',',$rawTags);
+                    }
+                }
+            }
+        }
+
+
+        return null;
     }
 
     /**
