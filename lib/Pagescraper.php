@@ -99,7 +99,11 @@ class Pagescraper {
             } else {
                 // url is relative
                 $parsed_url = parse_url( $location );
-                $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+                if (isset($parsed_url['scheme'])) {
+                    $result = $parsed_url['scheme'].'://'.$parsed_url['host']. $path;
+                } else {
+                    $result = $url;
+                }
                 return $result;
             }
         }
@@ -392,6 +396,8 @@ class Pagescraper {
         // example: <meta name="keywords" content="flight attendant,Alitalia">
         $tags = $this->getTagsFromMeta($rootNode, 'keywords');
         if ($tags !== null) return $tags;
+
+        return null;
     }
 
     private function getTagsFromMeta(DOMDocument $rootNode, string $attribute): ?array {
