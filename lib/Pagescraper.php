@@ -470,7 +470,8 @@ class Pagescraper {
         $this->downloadArticle($doc,$url);
         // if there is an amp version of the article use that instead (allows bypassing multiple page limits)
         $ampLink = $this->checkAmpVersion($doc);
-        if ($ampLink !== null) {
+        // follow only if amp link is not the same as the current link
+        if ($ampLink !== null && $url !== $ampLink) {
             return $this->getArticle($ampLink);
         }
 
