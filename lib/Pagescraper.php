@@ -356,6 +356,11 @@ class Pagescraper {
         $doc->encoding = 'utf-8'; // TODO: implement better website encoding detection
         $xpath = new DOMXPath($doc);
 
+        $title = $this->getTitle($doc);
+        if ($title !== null) {
+            $this->page->setTitle($title);
+        }
+
         $tags = $this->getTags($doc);
         if ($tags !== null) {
             $this->page->setTags($tags);
@@ -400,30 +405,69 @@ class Pagescraper {
         return null;
     }
 
-    private function getTagsFromMeta(DOMDocument $rootNode, string $attribute): ?array {
-        $rootNode->encoding = 'utf-8';
+    private function getTitle(DOMDocument $rootNode): ?string {
+        // https://ogp.me/
+        // example: <meta property="og:title" content="The Rock" />
+        $title = $this->getContentFromMeta($rootNode, 'og:title');
+        if ($title !== null) return $title;
 
-        $tags = [];
         // search for html header (where amp links are found)
         $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
-        if ($html === null) return $tags;
+        if ($html === null) return null;
         $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
-        if ($head === null) return $tags;
+        if ($head === null) return null;
         // next search for amp link
-        foreach ($head->childNodes as $metadata) {
-            if (isset($metadata->tagName) && $metadata->tagName === 'meta' ) {
-                if ($metadata->getAttribute('name') === $attribute) {
-                    $rawTags = $metadata->getAttribute('content');
-                    if ($this->getDebug()) {
-                        echo "Found ".$attribute.": ".$rawTags."\n";
+        foreach ($head->childNodes as $childNode) {
+            if ( isset($childNode->tagName) ) {
+                if ($childNode->tagName == "title") {
+                    $this->page->setTitle( $childNode->nodeValue );
+                }
+                if ($childNode->tagName == "meta" && $childNode->hasAttributes() && null !== $childNode->attributes->getNamedItem("name") ) {
+                    if ($childNode->attributes->getNamedItem("name")->nodeValue == "title") {
+                        $this->page->setTitle( $childNode->attributes->getNamedItem("content")->nodeValue );
                     }
-                    if (!empty($rawTags)) {
-                        return explode(',',$rawTags);
+                    if ($childNode->attributes->getNamedItem("name")->nodeValue == "author") {
+                        $this->page->setAuthor( $childNode->attributes->getNamedItem("content")->nodeValue );
                     }
                 }
             }
         }
 
+        return null;
+    }
+
+    private function getContentFromMeta(DOMDocument $rootNode, string $attribute): ?string {
+        $rootNode->encoding = 'utf-8';
+
+        // search for html header (where amp links are found)
+        $html = Pagescraper::getElementByTagNameInChildNodes('html', $rootNode);
+        if ($html === null) return null;
+        $head = Pagescraper::getElementByTagNameInChildNodes('head', $html);
+        if ($head === null) return null;
+        // next search for amp link
+        foreach ($head->childNodes as $metadata) {
+            if (isset($metadata->tagName) && $metadata->tagName === 'meta' ) {
+                if ($metadata->getAttribute('name') === $attribute) {
+                    $content = $metadata->getAttribute('content');
+                    if ($this->getDebug()) {
+                        echo "Found ".$attribute.": ".$content."\n";
+                    }
+                    if (!empty($content)) {
+                        return $content;
+                    }
+                }
+            }
+        }
+
+
+        return null;
+    }
+
+    private function getTagsFromMeta(DOMDocument $rootNode, string $attribute): ?array {
+        $rawTags = $this->getContentFromMeta($rootNode,$attribute);
+        if ($rawTags !== null) {
+            return explode(',',$rawTags);
+        }
 
         return null;
     }
@@ -468,6 +512,30 @@ class Pagescraper {
         $doc->preserveWhiteSpace = false;
 
         $this->downloadArticle($doc,$url);
+        // if there is an amp version of the article use that instead (allows bypassing multiple page limits)
+        $ampLink = $this->checkAmpVersion($doc);
+        // follow only if amp link is not the same as the current link
+        if ($ampLink !== null && $url !== $ampLink) {
+            return $this->getArticle($ampLink);
+        }
+
+        $this->parseArticle($doc);
+
+        return $this->page;
+    }
+
+    /**
+     * @param string $pageHtmlContent
+     * @return Page
+     */
+    public function getArticleFromHtml(string $pageHtmlContent): Page {
+        $doc = new DOMDocument;
+        $doc->preserveWhiteSpace = false;
+
+        if (! @$doc->loadHTML(mb_convert_encoding($pageHtmlContent,'HTML-ENTITIES',"auto")) ) {
+            $this->page->addError("failed to download page");
+        }
+
         // if there is an amp version of the article use that instead (allows bypassing multiple page limits)
         $ampLink = $this->checkAmpVersion($doc);
         if ($ampLink !== null) {
