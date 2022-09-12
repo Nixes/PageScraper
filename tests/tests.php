@@ -89,7 +89,7 @@ class TestPageScraper extends TestCase {
         $pageScraper = new Pagescraper;
         echo "Testing against page: ".$url;
         $article = $pageScraper->getArticle($url);
-        $this->assertEmpty($article->getErrors());
+
         if ( $article->getErrors() !== null && count($article->getErrors()) > 0 ) {
             echo "Errors: ";
             foreach ($article->getErrors() as $error) {
@@ -97,6 +97,7 @@ class TestPageScraper extends TestCase {
             }
             echo "\n";
         }
+        $this->assertEmpty($article->getErrors());
 
         $this->assertGreaterThan(0,count($article->getTags()));
 
