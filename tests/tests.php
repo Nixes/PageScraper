@@ -48,7 +48,6 @@ class TestPageScraper extends TestCase {
 
         // test private method
         $result = callMethod($pagescraper,'findHighestIndex',array( $test_array ));
-
         $this->assertEquals($correct_result ,$result );
     }
 
@@ -61,16 +60,12 @@ class TestPageScraper extends TestCase {
 
         $pagescraper = new Pagescraper;
         $result = callMethod($pagescraper,'convertRelToAbs',array( $test_url,$location ));
-
-        echo "Final url was: ".$result."\n";
-        echo "Expected url was: ".$correct_result."\n";
         $this->assertEquals($correct_result , $result );
     }
 
     public function test_realArticles () {
         $urls =  array(
             "http://spectrum.ieee.org/cars-that-think/transportation/self-driving/california-may-be-making-testing-selfdriving-cars-easier",
-            "http://feedproxy.google.com/~r/cnx-software/blog/~3/j4GR4BG3ptY/",
             "http://arstechnica.com/science/2016/10/hurricane-matthew-may-strike-the-florida-space-coast-threaten-iconic-nasa-buildings/",
             "http://arstechnica.com/gadgets/2016/10/galaxy-note-7-recall-part-2-samsung-admits-replacement-units-are-unsafe/"
         );
@@ -85,6 +80,7 @@ class TestPageScraper extends TestCase {
                 }
                 echo "\n";
             }
+            $this->assertEmpty($article->getErrors());
         }
     }
 
@@ -93,6 +89,7 @@ class TestPageScraper extends TestCase {
         $pageScraper = new Pagescraper;
         echo "Testing against page: ".$url;
         $article = $pageScraper->getArticle($url);
+
         if ( $article->getErrors() !== null && count($article->getErrors()) > 0 ) {
             echo "Errors: ";
             foreach ($article->getErrors() as $error) {
@@ -100,6 +97,7 @@ class TestPageScraper extends TestCase {
             }
             echo "\n";
         }
+        $this->assertEmpty($article->getErrors());
 
         $this->assertGreaterThan(0,count($article->getTags()));
 
