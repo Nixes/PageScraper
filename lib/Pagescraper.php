@@ -311,7 +311,7 @@ class Pagescraper {
      */
     private function downloadArticle(DOMDocument $doc,$url) {
         // validate url is actually a url
-        if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED | FILTER_FLAG_HOST_REQUIRED) === false) {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             // failed validation
             $this->page->addError("input url failed validation, please make sure it is valid before trying again");
             return;
